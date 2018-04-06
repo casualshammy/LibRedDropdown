@@ -15,7 +15,7 @@ Replacement for Blizzard's UIDropDownMenu.
 local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 ```
 ### Methods:  
-#### `dropdownMenu:SetList(table entities, boolean dontUpdateInternalList)`
+#### dropdownMenu:SetList(table entities, boolean dontUpdateInternalList)`  
 Sets list of entities. Example:  
 ```
 local t = { };
