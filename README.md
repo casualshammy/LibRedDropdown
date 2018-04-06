@@ -16,7 +16,7 @@ local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 ```
 ### Methods:  
 #### `dropdownMenu:SetList(table entities, boolean dontUpdateInternalList)`
-Sets list of entities. 
+Sets list of entities. Example:  
 ```
 local t = { };
 for i = 1, 100 do
@@ -48,8 +48,27 @@ _table entites_: it is a table with information about buttons that DropdownMenu 
 _boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
 
 #### `dropdownMenu:GetButtonByText(string text)`
-Returns button with specified text on it (or `nil` if no button found)  
+Returns button with specified text on it (or `nil` if no button found). Example:  
 ```
 local btn = dropdownMenu:GetButtonByText("Healing Surge")
 ```
 _string text_: text to search
+## CheckBox
+Checkbox with clickable label 
+### Constructor:  
+```
+local checkbox = libRedDropdown.CreateCheckBox();
+```
+### Methods: 
+#### `checkbox:SetText(string text)`
+Sets label's text. Example:  
+```
+checkbox:SetText("Click me!");
+```
+_string text_: new text of label  
+#### `checkbox:SetOnClickHandler(function func)`
+Sets `OnClick` handler. Example:  
+```
+checkbox:SetOnClickHandler(function() print("Clicked!"); end);
+```
+_function func_: function to execute on click
