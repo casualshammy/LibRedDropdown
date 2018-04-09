@@ -54,7 +54,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 <a name="example1" />
 
 ***
-## dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList)
+### dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList)
 _table entites_: it is a table with information about buttons that DropdownMenu should display. Valid fields of each entity:  
   * .text: button's text (string)  
   * .font: button's text font (string)  
@@ -87,7 +87,7 @@ dropdownMenu:SetList(t);
 ***
 <a name="example2" />
 
-## dropdownMenu:GetButtonByText(_string_ text) 
+### dropdownMenu:GetButtonByText(_string_ text) 
 _string text_: text to search
 ```lua
 local btn = dropdownMenu:GetButtonByText("Healing Surge")
@@ -95,7 +95,7 @@ local btn = dropdownMenu:GetButtonByText("Healing Surge")
 ***
 <a name="example3" />
 
-## checkbox:SetText(_string_ text) 
+### checkbox:SetText(_string_ text) 
 _string text_: new text of label 
 ```lua
 checkbox:SetText("Click me!");
@@ -103,7 +103,7 @@ checkbox:SetText("Click me!");
 ***
 <a name="example4" />
 
-## checkbox:SetOnClickHandler(_function_ func)
+### checkbox:SetOnClickHandler(_function_ func)
 _function func_: function to execute on click
 ```lua
 checkbox:SetOnClickHandler(function() print("Clicked!"); end);
