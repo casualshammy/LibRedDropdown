@@ -1,6 +1,14 @@
+# Table of contents
++ [API](#api) 
+  + [General notes](#general_notes) 
+  + [DropdownMenu](#dropdownmenu) 
+  + [CheckBox](#checkbox) 
+
 # LibRedDropdown  
 LibRedDropdown is another library that allows devs to add some common GUI elements into their addons. Initially this lib was created to replace Blizzard's UIDropDownMenu; now it contains 7 controls.
+<a name="api"/>
 # API
+<a name="general_notes"/>
 ## General notes
 Getting lib instance:
 ```
@@ -8,6 +16,7 @@ local libRedDropdown = LibStub("LibRedDropdown -1.0");
 ```
 All element constructors are static, you should call it like `lib.CreateControl()` (using dot). All element methods are instance methods, you should call it like `element:SomeMethod()` (using colon).  
 Basically, you should call `:SetParent` and `:SetPoint` methods for all elements after creating.  
+<a name="dropdownmenu"/>
 ## DropdownMenu
 Replacement for Blizzard's UIDropDownMenu.  
 ### Constructor:  
@@ -57,6 +66,7 @@ Returns button with specified text on it (or `nil` if no button found). Example:
 local btn = dropdownMenu:GetButtonByText("Healing Surge")
 ```
 _string text_: text to search
+<a name="checkbox"/>
 ## CheckBox
 Checkbox with clickable label 
 ### Constructor:  
