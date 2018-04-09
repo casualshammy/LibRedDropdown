@@ -16,8 +16,8 @@ LibRedDropdown is another library that allows devs to add some common GUI elemen
 
 ## General notes
 Getting lib instance:
-```
-local libRedDropdown = LibStub("LibRedDropdown -1.0");
+``` lua
+local libRedDropdown = LibStub("LibRedDropdown-1.0");
 ```
 All element constructors are static, you should call it like `lib.CreateControl()` (using dot). All element methods are instance methods, you should call it like `element:SomeMethod()` (using colon).  
 Basically, you should call `:SetParent` and `:SetPoint` methods for all elements after creating.  
@@ -26,7 +26,7 @@ Basically, you should call `:SetParent` and `:SetPoint` methods for all elements
 ## DropdownMenu
 Replacement for Blizzard's UIDropDownMenu.  
 ### Constructor:  
-```
+``` lua
 local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 ```
 ### Methods:  
@@ -34,7 +34,7 @@ local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 |--:|
 
 Sets list of entities. Example:  
-```
+``` lua
 local t = { };
 for i = 1, 100 do
   local spellName, _, spellIcon = GetSpellInfo(i);
@@ -68,7 +68,7 @@ _boolean dontUpdateInternalList_: prevents this method from changing internal li
 |--:|
 
 Returns button with specified text on it (or `nil` if no button found). Example:  
-```
+```lua
 local btn = dropdownMenu:GetButtonByText("Healing Surge")
 ```
 _string text_: text to search
@@ -77,7 +77,7 @@ _string text_: text to search
 ## CheckBox
 Checkbox with clickable label 
 ### Constructor:  
-```
+```lua
 local checkbox = libRedDropdown.CreateCheckBox();
 ```
 ### Methods: 
@@ -85,7 +85,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 |--:|
 
 Sets label's text. Example:  
-```
+```lua
 checkbox:SetText("Click me!");
 ```
 _string text_: new text of label  
@@ -94,7 +94,7 @@ _string text_: new text of label
 |--:|
 
 Sets `OnClick` handler. Example:  
-```
+```lua
 checkbox:SetOnClickHandler(function() print("Clicked!"); end);
 ```
 _function func_: function to execute on click
