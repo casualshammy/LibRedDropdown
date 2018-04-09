@@ -15,7 +15,9 @@ Replacement for Blizzard's UIDropDownMenu.
 local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 ```
 ### Methods:  
-#### dropdownMenu:SetList(table entities, boolean dontUpdateInternalList)  
+| **dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList)** |
+|--:|
+
 Sets list of entities. Example:  
 ```
 local t = { };
@@ -46,8 +48,10 @@ _table entites_: it is a table with information about buttons that DropdownMenu 
   * .dontCloseOnClick: set to true to prevent DropdownMenu from hiding when user clicks on button in list (boolean)  
 
 _boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
+  
+| **dropdownMenu:GetButtonByText(_string_ text)** |
+|--:|
 
-#### dropdownMenu:GetButtonByText(string text)
 Returns button with specified text on it (or `nil` if no button found). Example:  
 ```
 local btn = dropdownMenu:GetButtonByText("Healing Surge")
@@ -60,13 +64,18 @@ Checkbox with clickable label
 local checkbox = libRedDropdown.CreateCheckBox();
 ```
 ### Methods: 
-#### checkbox:SetText(string text)
+| **checkbox:SetText(_string_ text)** |
+|--:|
+
 Sets label's text. Example:  
 ```
 checkbox:SetText("Click me!");
 ```
 _string text_: new text of label  
-#### checkbox:SetOnClickHandler(function func)
+
+| **checkbox:SetOnClickHandler(_function_ func)** |
+|--:|
+
 Sets `OnClick` handler. Example:  
 ```
 checkbox:SetOnClickHandler(function() print("Clicked!"); end);
