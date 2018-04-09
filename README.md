@@ -4,6 +4,7 @@
   + [General notes](#general_notes) 
   + [DropdownMenu](#dropdownmenu) 
   + [CheckBox](#checkbox) 
++ [Examples](#example1) 
 
 <a name="about" />
 
@@ -25,15 +26,46 @@ Basically, you should call `:SetParent` and `:SetPoint` methods for all elements
 
 ## DropdownMenu
 Replacement for Blizzard's UIDropDownMenu.  
-### Constructor:  
+### Constructor
 ``` lua
 local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 ```
-### Methods:  
-| **dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList)** |
-|--:|
+### Methods
+| Method | Description |
+|--------------------------------------------------------------------------|-----------------------------------------|
+| dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList) | Sets list of entities. [Details](#example1) |
+| dropdownMenu:GetButtonByText(_string_ text)                              | Returns button with specified text on it (or `nil` if no button found). [Details](#example2) |
 
-Sets list of entities. Example:  
+<a name="checkbox"/>
+
+## CheckBox
+Checkbox with clickable label 
+### Constructor  
+```lua
+local checkbox = libRedDropdown.CreateCheckBox();
+```
+### Methods  
+| Method | Description |
+|---------------------------------------------|----------------------------------------------|
+| checkbox:SetText(_string_ text)             | Sets label's text. [Details](#example3)      |
+| checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
+
+# Examples  
+<a name="example1" />
+
+***
+## dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList)
+_table entites_: it is a table with information about buttons that DropdownMenu should display. Valid fields of each entity:  
+  * .text: button's text (string)  
+  * .font: button's text font (string)  
+  * .icon: button's icon (integer)  
+  * .func: function that will be executed on user click (function)  
+  * .onEnter: function that will be executed on mouse enter (function)  
+  * .onLeave: function that will be executed on mouse leave (function)  
+  * .disabled: set to true to disable button - will be grayed out (boolean)  
+  * .dontCloseOnClick: set to true to prevent DropdownMenu from hiding when user clicks on button in list (boolean)  
+
+_boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
 ``` lua
 local t = { };
 for i = 1, 100 do
@@ -51,50 +83,29 @@ for i = 1, 100 do
   });
 end
 dropdownMenu:SetList(t);
-```  
-_table entites_: it is a table with information about buttons that DropdownMenu should display. Valid fields of each entity:  
-  * .text: button's text (string)  
-  * .font: button's text font (string)  
-  * .icon: button's icon (integer)  
-  * .func: function that will be executed on user click (function)  
-  * .onEnter: function that will be executed on mouse enter (function)  
-  * .onLeave: function that will be executed on mouse leave (function)  
-  * .disabled: set to true to disable button - will be grayed out (boolean)  
-  * .dontCloseOnClick: set to true to prevent DropdownMenu from hiding when user clicks on button in list (boolean)  
+``` 
+***
+<a name="example2" />
 
-_boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
-  
-| **dropdownMenu:GetButtonByText(_string_ text)** |
-|--:|
-
-Returns button with specified text on it (or `nil` if no button found). Example:  
+## dropdownMenu:GetButtonByText(_string_ text) 
+_string text_: text to search
 ```lua
 local btn = dropdownMenu:GetButtonByText("Healing Surge")
 ```
-_string text_: text to search
-<a name="checkbox"/>
+***
+<a name="example3" />
 
-## CheckBox
-Checkbox with clickable label 
-### Constructor:  
-```lua
-local checkbox = libRedDropdown.CreateCheckBox();
-```
-### Methods: 
-| **checkbox:SetText(_string_ text)** |
-|--:|
-
-Sets label's text. Example:  
+## checkbox:SetText(_string_ text) 
+_string text_: new text of label 
 ```lua
 checkbox:SetText("Click me!");
 ```
-_string text_: new text of label  
+***
+<a name="example4" />
 
-| **checkbox:SetOnClickHandler(_function_ func)** |
-|--:|
-
-Sets `OnClick` handler. Example:  
+## checkbox:SetOnClickHandler(_function_ func)
+_function func_: function to execute on click
 ```lua
 checkbox:SetOnClickHandler(function() print("Clicked!"); end);
 ```
-_function func_: function to execute on click
+***
