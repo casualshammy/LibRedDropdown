@@ -5,7 +5,8 @@
   + [DropdownMenu](#dropdownmenu) 
   + [CheckBox](#checkbox) 
 
-<a name="about"/>
+<a name="about" />
+
 # About 
 LibRedDropdown is another library that allows devs to add some common GUI elements into their addons. Initially this lib was created to replace Blizzard's UIDropDownMenu; now it contains 7 controls.
 <a name="api"/>
