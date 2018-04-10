@@ -50,6 +50,20 @@ local checkbox = libRedDropdown.CreateCheckBox();
 | checkbox:SetText(_string_ text)             | Sets label's text. [Details](#example3)      |
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
 
+## Tri-state checkbox
+Checkbox with three states: disabled, enabled#1 and enabled#2
+### Constructor  
+```lua
+local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
+```
+### Methods
+| Method | Description |
+|--------|-------------|
+| triStateCheckbox:SetTextEntries(_table_ entries)    | Sets text values for each state. [Example](#example5)           |
+| triStateCheckbox:SetTriState(_integer_ state)       | Sets state of checkbox. [Example](#example5)                    |
+| triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_integer_). [Example](#example5) |
+| triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
+
 # Examples  
 <a name="example1" />
 
@@ -107,5 +121,27 @@ checkbox:SetText("Click me!");
 _function func_: function to execute on click
 ```lua
 checkbox:SetOnClickHandler(function() print("Clicked!"); end);
+```
+***
+<a name="example5" />
+
+### Tri-state checkbox
+``` lua
+local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
+triStateCheckbox:SetTextEntries({
+  "Disabled",
+  "Enabled#1",
+  "Enabled#2",
+});
+triStateCheckbox:SetOnClickHandler(function(self)
+  if (self:GetTriState() == 0) then
+    print("Disabled");
+  elseif (self:GetTriState() == 1) then
+    print("Enabled#1");
+  else
+    print("Enabled#2");
+  end
+end);
+triStateCheckbox:SetTriState(1); -- Set to "Enabled#1"
 ```
 ***
