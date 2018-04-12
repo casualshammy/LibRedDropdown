@@ -4,6 +4,8 @@
   + [General notes](#general_notes) 
   + [DropdownMenu](#dropdownmenu) 
   + [CheckBox](#checkbox) 
+  + [Tri-state checkbox](#tristatecheckbox)
+  + [ColorPicker](#colorpicker)
 + [Examples](#example1) 
 
 <a name="about" />
@@ -49,6 +51,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 |---------------------------------------------|----------------------------------------------|
 | checkbox:SetText(_string_ text)             | Sets label's text. [Details](#example3)      |
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
+<a name="tristatecheckbox"/>
 
 ## Tri-state checkbox
 Checkbox with three states: disabled, enabled#1 and enabled#2
@@ -63,6 +66,23 @@ local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
 | triStateCheckbox:SetTriState(_integer_ state)       | Sets state of checkbox. [Example](#example5)                    |
 | triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_integer_). [Example](#example5) |
 | triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
+<a name="colorpicker"/>
+
+## ColorPicker
+Small color frame with text label
+### Constructor
+``` lua
+local colorPicker = libRedDropdown.CreateColorPicker();
+```
+### Methods
+| Method | Description |
+|--------|-------------|
+| colorPicker:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example6) |
+| colorPicker:SetText(_string_ text)                                   | Sets label text. [Example](#example6)                     |
+| colorPicker:GetText()                                                | Returns label text (_string_). [Example](#example6)       |
+| colorPicker:SetColor(_integer_ red, _integer_ green, _integer_ blue) | Sets color. Color values are between 0.0 and 1.0 [Example](#example6) |
+| colorPicker:GetColor()                                               | Returns color (_integer_ red, _integer_ green, _integer_ blue). [Example](#example6) |
+
 
 # Examples  
 <a name="example1" />
@@ -143,5 +163,37 @@ triStateCheckbox:SetOnClickHandler(function(self)
   end
 end);
 triStateCheckbox:SetTriState(1); -- Set to "Enabled#1"
+```
+***
+<a name="example6" />
+
+### ColorPicker
+``` lua
+local SOME_VALUE = { 1, 1, 0 };
+local colorPicker = libRedDropdown.CreateColorPicker();
+colorPicker:SetParent(UIParent);
+colorPicker:SetPoint("CENTER", 0, 0);
+colorPicker:SetText("Label");
+colorPicker:SetColor(1, 0, 0);
+colorPicker:SetScript("OnClick", function()
+  ColorPickerFrame:Hide();
+  local function callback(restore)
+    local r, g, b;
+    if (restore) then
+      r, g, b = unpack(restore);
+    else
+      r, g, b = ColorPickerFrame:GetColorRGB();
+    end
+    colorPicker:SetColor(r, g, b);
+    local red, green, blue = colorPicker:GetColor();
+    SOME_VALUE = { red, green, blue };
+  end
+  ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc =  
+      callback, callback, callback;
+  ColorPickerFrame:SetColorRGB(unpack(SOME_VALUE));
+  ColorPickerFrame.hasOpacity = false;
+  ColorPickerFrame.previousValues = SOME_VALUE;
+  ColorPickerFrame:Show();
+end);
 ```
 ***
