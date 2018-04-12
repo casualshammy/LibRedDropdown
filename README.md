@@ -49,7 +49,9 @@ local checkbox = libRedDropdown.CreateCheckBox();
 ### Methods  
 | Method | Description |
 |---------------------------------------------|----------------------------------------------|
-| checkbox:SetText(_string_ text)             | Sets label's text. [Details](#example3)      |
+| checkbox:SetText(_string_ text)             | Sets text of label. [Details](#example3)      |
+| checkbox:GetText()                          | Gets text of label. |
+| checkbox:GetTextObject()                    | Returns text object of label (_frame_ - _FontString_). |
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
 <a name="tristatecheckbox"/>
 
@@ -78,8 +80,8 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 | Method | Description |
 |--------|-------------|
 | colorPicker:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example6) |
-| colorPicker:SetText(_string_ text)                                   | Sets label text. [Example](#example6)                     |
-| colorPicker:GetText()                                                | Returns label text (_string_). [Example](#example6)       |
+| colorPicker:SetText(_string_ text)                                   | Sets text of label. [Example](#example6)                     |
+| colorPicker:GetText()                                                | Returns text of label (_string_). [Example](#example6)       |
 | colorPicker:SetColor(_integer_ red, _integer_ green, _integer_ blue) | Sets color. Color values are between 0.0 and 1.0 [Example](#example6) |
 | colorPicker:GetColor()                                               | Returns color (_integer_ red, _integer_ green, _integer_ blue). [Example](#example6) |
 
