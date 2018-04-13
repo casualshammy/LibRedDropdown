@@ -232,6 +232,8 @@ button:SetText("Click me!");
 button:SetWidth(110);
 button:SetHeight(20);
 button:SetPoint("CENTER", 0, 0);
-button:SetScript("OnClick", function(self, ...) print(string.format("Button with label '%s' is clicked!", self:GetText())); end);
+button:SetScript("OnClick", function(self, ...)
+  print(string.format("Button with label '%s' is clicked!", self:GetText()));
+end);
 ```
 ***
