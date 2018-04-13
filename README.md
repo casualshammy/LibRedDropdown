@@ -27,6 +27,7 @@ Basically, you should call `:SetParent` and `:SetPoint` methods for all elements
 <a name="dropdownmenu"/>
 
 ## DropdownMenu
+![dropdownmenu.gif](docs/dropdownmenu.gif)  
 Replacement for Blizzard's UIDropDownMenu.  
 ### Constructor
 ``` lua
