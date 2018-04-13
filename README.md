@@ -28,7 +28,7 @@ Basically, you should call `:SetParent` and `:SetPoint` methods for all elements
 
 <a name="dropdownmenu"/>
 
-## DropdownMenu
+## > DropdownMenu
 ![dropdownmenu.gif](docs/dropdownmenu.gif)  
 Replacement for Blizzard's UIDropDownMenu.  
 ### Constructor
@@ -43,7 +43,7 @@ local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 
 <a name="checkbox"/>
 
-## CheckBox
+## > CheckBox
 Checkbox with clickable label. It's inherited from Blizzard's _CheckButton_ so you can use all its methods
 ### Constructor  
 ```lua
@@ -58,7 +58,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
 <a name="tristatecheckbox"/>
 
-## Tri-state checkbox
+## > Tri-state checkbox
 ![tristatechckbox.gif](docs/tristatechckbox.gif)  
 Checkbox with three states: disabled, enabled#1 and enabled#2
 ### Constructor  
@@ -74,7 +74,7 @@ local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
 | triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
 <a name="colorpicker"/>
 
-## ColorPicker
+## > ColorPicker
 ![colorpicker.png](docs/colorpicker.png)  
 Small color frame with text label
 ### Constructor
@@ -92,7 +92,7 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 
 <a name="button"/>
 
-## Button
+## > Button
 ![](docs/)  
 Just a button. Have sharper edges than Blizzard's one!
 ### Constructor
