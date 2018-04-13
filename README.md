@@ -6,6 +6,7 @@
   + [CheckBox](#checkbox) 
   + [Tri-state checkbox](#tristatecheckbox)
   + [ColorPicker](#colorpicker)
+  + [Button](#button)
 + [Examples](#example1) 
 
 <a name="about" />
@@ -24,6 +25,7 @@ local libRedDropdown = LibStub("LibRedDropdown-1.0");
 ```
 All element constructors are static, you should call it like `lib.CreateControl()` (using dot). All element methods are instance methods, you should call it like `element:SomeMethod()` (using colon).  
 Basically, you should call `:SetParent` and `:SetPoint` methods for all elements after creating.  
+
 <a name="dropdownmenu"/>
 
 ## DropdownMenu
@@ -42,7 +44,7 @@ local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 <a name="checkbox"/>
 
 ## CheckBox
-Checkbox with clickable label 
+Checkbox with clickable label. It's inherited from Blizzard's _CheckButton_ so you can use all its methods
 ### Constructor  
 ```lua
 local checkbox = libRedDropdown.CreateCheckBox();
@@ -67,8 +69,8 @@ local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
 | Method | Description |
 |--------|-------------|
 | triStateCheckbox:SetTextEntries(_table_ entries)    | Sets text values for each state. [Example](#example5)           |
-| triStateCheckbox:SetTriState(_number_ state)       | Sets state of checkbox. [Example](#example5)                    |
-| triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_number_). [Example](#example5) |
+| triStateCheckbox:SetTriState(_number_ state)        | Sets state of checkbox. [Example](#example5)                    |
+| triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_number_). [Example](#example5)  |
 | triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
 <a name="colorpicker"/>
 
@@ -82,13 +84,31 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| colorPicker:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example6) |
-| colorPicker:SetText(_string_ text)                                   | Sets text of label. [Example](#example6)                     |
-| colorPicker:GetText()                                                | Returns text of label (_string_). [Example](#example6)       |
-| colorPicker:SetColor(_number_ red, _number_ green, _number_ blue) | Sets color. Color values are between 0.0 and 1.0 [Example](#example6) |
+| colorPicker:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example6)       |
+| colorPicker:SetText(_string_ text)                                   | Sets text of label. [Example](#example6)                                          |
+| colorPicker:GetText()                                                | Returns text of label (_string_). [Example](#example6)                            |
+| colorPicker:SetColor(_number_ red, _number_ green, _number_ blue)    | Sets color. Color values are between 0.0 and 1.0 [Example](#example6)             |
 | colorPicker:GetColor()                                               | Returns color (_number_ red, _number_ green, _number_ blue). [Example](#example6) |
 
+<a name="button"/>
 
+## Button
+![](docs/)  
+Just a button. Have sharper edges than Blizzard's one!
+### Constructor
+``` lua
+local button = libRedDropdown.CreateButton();
+```
+### Methods
+| Method | Description |
+|--------|-------------|
+| button:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example7)               |
+| button:SetText(_string_ text)                                   | Sets text of label. [Example](#example7)                                                  |
+| button:GetText()                                                | Returns text of label (_string_). [Example](#example7)                                    |
+| button:SetGray(_boolean_ gray)                                  | "Disables" button. It's not actually disabled, it's just grayed out. [Example](#example7) |
+| button:IsGrayed()                                               | Returns "disabled" state (_boolean_). [Example](#example7)                                |
+  
+  
 # Examples  
 <a name="example1" />
 
@@ -200,5 +220,18 @@ colorPicker:SetScript("OnClick", function()
   ColorPickerFrame.previousValues = SOME_VALUE;
   ColorPickerFrame:Show();
 end);
+```
+***
+<a name="example7" />
+
+### Button
+``` lua
+local button = libRedDropdown.CreateButton();
+button:SetParent(UIParent);
+button:SetText("Click me!");
+button:SetWidth(110);
+button:SetHeight(20);
+button:SetPoint("CENTER", 0, 0);
+button:SetScript("OnClick", function(self, ...) print(string.format("Button with label '%s' is clicked!", self:GetText())); end);
 ```
 ***
