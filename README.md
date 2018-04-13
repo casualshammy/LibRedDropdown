@@ -57,6 +57,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 <a name="tristatecheckbox"/>
 
 ## Tri-state checkbox
+![tristatechckbox.gif](docs/tristatechckbox.gif)  
 Checkbox with three states: disabled, enabled#1 and enabled#2
 ### Constructor  
 ```lua
