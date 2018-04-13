@@ -67,12 +67,13 @@ local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
 | Method | Description |
 |--------|-------------|
 | triStateCheckbox:SetTextEntries(_table_ entries)    | Sets text values for each state. [Example](#example5)           |
-| triStateCheckbox:SetTriState(_integer_ state)       | Sets state of checkbox. [Example](#example5)                    |
-| triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_integer_). [Example](#example5) |
+| triStateCheckbox:SetTriState(_number_ state)       | Sets state of checkbox. [Example](#example5)                    |
+| triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_number_). [Example](#example5) |
 | triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
 <a name="colorpicker"/>
 
 ## ColorPicker
+![colorpicker.png](docs/colorpicker.png)  
 Small color frame with text label
 ### Constructor
 ``` lua
@@ -84,8 +85,8 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 | colorPicker:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example6) |
 | colorPicker:SetText(_string_ text)                                   | Sets text of label. [Example](#example6)                     |
 | colorPicker:GetText()                                                | Returns text of label (_string_). [Example](#example6)       |
-| colorPicker:SetColor(_integer_ red, _integer_ green, _integer_ blue) | Sets color. Color values are between 0.0 and 1.0 [Example](#example6) |
-| colorPicker:GetColor()                                               | Returns color (_integer_ red, _integer_ green, _integer_ blue). [Example](#example6) |
+| colorPicker:SetColor(_number_ red, _number_ green, _number_ blue) | Sets color. Color values are between 0.0 and 1.0 [Example](#example6) |
+| colorPicker:GetColor()                                               | Returns color (_number_ red, _number_ green, _number_ blue). [Example](#example6) |
 
 
 # Examples  
@@ -96,7 +97,7 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 _table entites_: it is a table with information about buttons that DropdownMenu should display. Valid fields of each entity:  
   * .text: button's text (string)  
   * .font: button's text font (string)  
-  * .icon: button's icon (integer)  
+  * .icon: button's icon (number)  
   * .func: function that will be executed on user click (function)  
   * .onEnter: function that will be executed on mouse enter (function)  
   * .onLeave: function that will be executed on mouse leave (function)  
