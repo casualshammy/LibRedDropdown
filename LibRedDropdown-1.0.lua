@@ -329,7 +329,6 @@ function lib.CreateSlider(parent, x, y, size)
 end
 
 function lib.CreateButton()
-	-- After creation we need to set up :SetWidth, :SetHeight, :SetPoint, :SetScript
 	local button = CreateFrame("Button");
 	button.Background = button:CreateTexture(nil, "BORDER");
 	button.Background:SetPoint("TOPLEFT", 1, -1);
@@ -362,11 +361,24 @@ function lib.CreateButton()
 	button:SetScript("OnMouseUp", function(self) self.Text:SetPoint("CENTER", 0, 0) end);
 	
 	button.SetGray = function(self, gray)
-		button.Normal:SetColorTexture(unpack(gray and {0, 0, 0, 1} or {0.38, 0, 0, 1}));
+		self.Normal:SetColorTexture(unpack(gray and {0, 0, 0, 1} or {0.38, 0, 0, 1}));
+		self.grayed = gray;
+	end
+	
+	button.IsGrayed = function(self)
+		return self.grayed == true;
 	end
 	
 	button.SetText = function(self, text)
 		self.Text:SetText(text);
+	end
+	
+	button.GetText = function(self)
+		return self.Text:GetText();
+	end
+	
+	button.GetTextObject = function(self)
+		return self.Text;
 	end
 	
 	return button;
