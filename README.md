@@ -14,9 +14,7 @@
 # About 
 LibRedDropdown is another library that allows devs to add some common GUI elements into their addons. Initially this lib was created to replace Blizzard's UIDropDownMenu; now it contains 7 controls.
 <a name="api"/>
-  
-  
-  
+<br /><br /><br />
 # API
 <a name="general_notes"/>
 
