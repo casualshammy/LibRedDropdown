@@ -5,8 +5,8 @@
   + [DropdownMenu](#dropdownmenu) 
   + [CheckBox](#checkbox) 
   + [Tri-state checkbox](#tristatecheckbox)
-  + [ColorPicker](#colorpicker)
-  + [Button](#button)
+  + [ColorPicker](#colorpickerdesc)
+  + [Button](#buttondecs)
 + [Examples](#example1) 
 
 <a name="about" />
@@ -71,7 +71,7 @@ local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
 | triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_number_). [Example](#example5)  |
 | triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
   
-<br /><a name="colorpicker"/><br />
+<br /><a name="colorpickerdesc"/><br />
 ## > ColorPicker
 ![colorpicker.png](docs/colorpicker.png)  
 Small color frame with text label
@@ -88,7 +88,7 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 | colorPicker:SetColor(_number_ red, _number_ green, _number_ blue)    | Sets color. Color values are between 0.0 and 1.0 [Example](#example6)             |
 | colorPicker:GetColor()                                               | Returns color (_number_ red, _number_ green, _number_ blue). [Example](#example6) |
   
-<br /><a name="button"/><br />
+<br /><a name="buttondesc"/><br />
 ## > Button
 ![buttor.gif](docs/button.gif)  
 Just a button. Have sharper edges than Blizzard's one!
