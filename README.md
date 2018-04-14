@@ -52,7 +52,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 |---------------------------------------------|----------------------------------------------|
 | checkbox:SetText(_string_ text)             | Sets text of label. [Details](#example3)      |
 | checkbox:GetText()                          | Gets text of label. |
-| checkbox:GetTextObject()                    | Returns text object of label (_frame_ - _FontString_). |
+| checkbox:GetTextObject()                    | Returns text object of label (_FontString_). |
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
   
 <br /><a name="tristatecheckbox"/><br />
@@ -82,7 +82,7 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| colorPicker:GetTextObject()                                          | Returns text object of label (_frame_ - _FontString_). [Example](#example6)       |
+| colorPicker:GetTextObject()                                          | Returns text object of label (_FontString_). [Example](#example6)       |
 | colorPicker:SetText(_string_ text)                                   | Sets text of label. [Example](#example6)                                          |
 | colorPicker:GetText()                                                | Returns text of label (_string_). [Example](#example6)                            |
 | colorPicker:SetColor(_number_ red, _number_ green, _number_ blue)    | Sets color. Color values are between 0.0 and 1.0 [Example](#example6)             |
@@ -91,7 +91,7 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 <br /><a name="buttondesc" /><br />
 ## > Button
 ![buttor.gif](docs/button.gif)  
-Just a button. Have sharper edges than Blizzard's one!
+Just a button. Has sharper edges than Blizzard's one!
 ### Constructor
 ``` lua
 local button = libRedDropdown.CreateButton();
@@ -99,11 +99,28 @@ local button = libRedDropdown.CreateButton();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| button:GetTextObject()         | Returns text object of label (_frame_ - _FontString_).                |
+| button:GetTextObject()         | Returns text object of label (_FontString_).                |
 | button:SetText(_string_ text)  | Sets text of label. [Example](#example7)                              |
 | button:GetText()               | Returns text of label (_string_). [Example](#example7)                |
 | button:SetGray(_boolean_ gray) | "Disables" button. It's not actually disabled, it's just grayed out.  |
 | button:IsGrayed()              | Returns "disabled" state (_boolean_).                                 |
+  
+<br /><a name="sliderdesc" /><br />
+## > Slider
+![slider.gif](docs/slider.gif)  
+Slider with textbox. [Example](#example_slider)
+### Constructor
+``` lua
+local slider = libRedDropdown.CreateSlider();
+```
+### Methods
+| Method | Description |
+|--------|-------------|
+| slider:GetTextObject()       | Returns text object of label (_FontString_).                  |
+| slider:GetBaseSliderObject() | Returns slider object (_Slider_).                             |
+| slider:GetEditboxObject()    | Returns editbox object (_EditBox_).                           |
+| slider:GetLowTextObject()    | Returns text object of label of minimum value (_FontString_). |
+| slider:GetHighTextObject()   | Returns text object of label of maximum value (_FontString_). |
   
 <br /><br /><a name="example1" /><br />
 # Examples  
@@ -231,5 +248,45 @@ button:SetPoint("CENTER", 0, 0);
 button:SetScript("OnClick", function(self, ...)
   print(string.format("Button with label '%s' is clicked!", self:GetText()));
 end);
+```
+***
+<a name="example_slider" />
+
+### Slider
+``` lua
+local minValue, maxValue = 0.3, 3;
+local slider = VGUI.CreateSlider();
+slider:SetWidth(200);
+slider:SetPoint("CENTER", 0, 0);
+slider:SetParent(UIParent);
+slider:GetTextObject():SetText("Label");
+slider:GetBaseSliderObject():SetValueStep(0.1);
+slider:GetBaseSliderObject():SetMinMaxValues(minValue, maxValue);
+slider:GetBaseSliderObject():SetValue(1.5);
+slider:GetBaseSliderObject():SetScript("OnValueChanged", function(self, value)
+	local actualValue = tonumber(string_format("%.1f", value));
+	slider:GetEditboxObject():SetText(tostring(actualValue));
+end);
+slider:GetEditboxObject():SetText("1.5");
+slider:GetEditboxObject():SetScript("OnEnterPressed", function(self, value)
+	if (slider:GetEditboxObject():GetText() ~= "") then
+		local v = tonumber(slider:GetEditboxObject():GetText());
+		if (v == nil) then
+			-- Value must be a number
+			slider:GetEditboxObject():SetText(tostring(1.5));
+		else
+			if (v > maxValue) then
+				v = maxValue;
+			end
+			if (v < minValue) then
+				v = minValue;
+			end
+			slider:GetBaseSliderObject():SetValue(v);
+		end
+		slider:GetEditboxObject():ClearFocus();
+	end
+end);
+slider.lowtext:SetText(tostring(minValue));
+slider.hightext:SetText(tostring(maxValue));
 ```
 ***

@@ -281,11 +281,9 @@ function lib.CreateCheckBoxWithColorPicker()
 	return checkBox;
 end
 
-function lib.CreateSlider(parent, x, y, size)
-	local frame = CreateFrame("Frame", nil, parent);
+function lib.CreateSlider()
+	local frame = CreateFrame("Frame");
 	frame:SetHeight(100);
-	frame:SetWidth(size);
-	frame:SetPoint("TOPLEFT", x, y);
 	frame.label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 	frame.label:SetPoint("TOPLEFT");
 	frame.label:SetPoint("TOPRIGHT");
@@ -325,6 +323,13 @@ function lib.CreateSlider(parent, x, y, size)
 	frame.editbox:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
 	frame.editbox:SetScript("OnEscapePressed", function() frame.editbox:ClearFocus(); end)
 	frame:Hide();
+	
+	frame.GetTextObject = function(self) return self.label; end
+	frame.GetBaseSliderObject = function(self) return self.slider; end
+	frame.GetEditboxObject = function(self) return self.editbox; end
+	frame.GetLowTextObject = function(self) return self.lowtext; end
+	frame.GetHighTextObject = function(self) return self.hightext; end
+	
 	return frame;
 end
 
