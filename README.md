@@ -26,10 +26,7 @@ local libRedDropdown = LibStub("LibRedDropdown-1.0");
 All element constructors are static, you should call it like `lib.CreateControl()` (using dot). All element methods are instance methods, you should call it like `element:SomeMethod()` (using colon).  
 Basically, you should call `:SetParent` and `:SetPoint` methods for all elements after creating.  
   
-  
-  
-<a name="dropdownmenu"/>
-
+<br /><a name="dropdownmenu"/><br />
 ## > DropdownMenu
 ![dropdownmenu.gif](docs/dropdownmenu.gif)  
 Replacement for Blizzard's UIDropDownMenu.  
@@ -43,10 +40,7 @@ local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 | dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList) | Sets list of entities. [Details](#example1) |
 | dropdownMenu:GetButtonByText(_string_ text)                              | Returns button with specified text on it (or `nil` if no button found). [Details](#example2) |
   
-  
-  
-<a name="checkbox"/>
-
+<br /><a name="checkbox"/><br />
 ## > CheckBox
 Checkbox with clickable label. It's inherited from Blizzard's _CheckButton_ so you can use all its methods
 ### Constructor  
@@ -61,10 +55,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 | checkbox:GetTextObject()                    | Returns text object of label (_frame_ - _FontString_). |
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
   
-  
-  
-<a name="tristatecheckbox"/>
-
+<br /><a name="tristatecheckbox"/><br />
 ## > Tri-state checkbox
 ![tristatechckbox.gif](docs/tristatechckbox.gif)  
 Checkbox with three states: disabled, enabled#1 and enabled#2
@@ -80,10 +71,7 @@ local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
 | triStateCheckbox:GetTriState()                      | Returns the state of checkbox (_number_). [Example](#example5)  |
 | triStateCheckbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Example](#example5)                    |
   
-  
-  
-<a name="colorpicker"/>
-
+<br /><a name="colorpicker"/><br />
 ## > ColorPicker
 ![colorpicker.png](docs/colorpicker.png)  
 Small color frame with text label
@@ -100,12 +88,9 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 | colorPicker:SetColor(_number_ red, _number_ green, _number_ blue)    | Sets color. Color values are between 0.0 and 1.0 [Example](#example6)             |
 | colorPicker:GetColor()                                               | Returns color (_number_ red, _number_ green, _number_ blue). [Example](#example6) |
   
-  
-  
-<a name="button"/>
-
+<br /><a name="button"/><br />
 ## > Button
-![](docs/)  
+![buttor.gif](docs/button.gif)  
 Just a button. Have sharper edges than Blizzard's one!
 ### Constructor
 ``` lua
@@ -120,10 +105,8 @@ local button = libRedDropdown.CreateButton();
 | button:SetGray(_boolean_ gray) | "Disables" button. It's not actually disabled, it's just grayed out.  |
 | button:IsGrayed()              | Returns "disabled" state (_boolean_).                                 |
   
-  
-  
+<br /><br /><a name="example1" /><br />
 # Examples  
-<a name="example1" />
 
 ***
 ### dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList)
