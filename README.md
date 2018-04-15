@@ -7,6 +7,7 @@
   + [Tri-state checkbox](#tristatecheckbox)
   + [ColorPicker](#colorpickerdesc)
   + [Button](#buttondesc)
+  + [Slider](#sliderdesc)
 + [Examples](#example1) 
 
 <a name="about" />
@@ -38,7 +39,7 @@ local dropdownMenu = libRedDropdown.CreateDropdownMenu();
 | Method | Description |
 |--------------------------------------------------------------------------|-----------------------------------------|
 | dropdownMenu:SetList(_table_ entities, _boolean_ dontUpdateInternalList) | Sets list of entities. [Details](#example1) |
-| dropdownMenu:GetButtonByText(_string_ text)                              | Returns button with specified text on it (or `nil` if no button found). [Details](#example2) |
+| dropdownMenu:GetButtonByText(_string_ text)                              | Returns button with specified text on it (or `nil` if no button found). |
   
 <br /><a name="checkbox"/><br />
 ## > CheckBox
@@ -50,7 +51,7 @@ local checkbox = libRedDropdown.CreateCheckBox();
 ### Methods  
 | Method | Description |
 |---------------------------------------------|----------------------------------------------|
-| checkbox:SetText(_string_ text)             | Sets text of label. [Details](#example3)      |
+| checkbox:SetText(_string_ text)             | Sets text of label.                          |
 | checkbox:GetText()                          | Gets text of label. |
 | checkbox:GetTextObject()                    | Returns text object of label (_FontString_). |
 | checkbox:SetOnClickHandler(_function_ func) | Sets `OnClick` handler. [Details](#example4) |
@@ -155,22 +156,6 @@ for i = 1, 100 do
   });
 end
 dropdownMenu:SetList(t);
-``` 
-***
-<a name="example2" />
-
-### dropdownMenu:GetButtonByText(_string_ text) 
-_string text_: text to search
-```lua
-local btn = dropdownMenu:GetButtonByText("Healing Surge")
-```
-***
-<a name="example3" />
-
-### checkbox:SetText(_string_ text) 
-_string text_: new text of label 
-```lua
-checkbox:SetText("Click me!");
 ```
 ***
 <a name="example4" />
@@ -264,27 +249,27 @@ slider:GetBaseSliderObject():SetValueStep(0.1);
 slider:GetBaseSliderObject():SetMinMaxValues(minValue, maxValue);
 slider:GetBaseSliderObject():SetValue(1.5);
 slider:GetBaseSliderObject():SetScript("OnValueChanged", function(self, value)
-	local actualValue = tonumber(string_format("%.1f", value));
-	slider:GetEditboxObject():SetText(tostring(actualValue));
+  local actualValue = tonumber(string_format("%.1f", value));
+  slider:GetEditboxObject():SetText(tostring(actualValue));
 end);
 slider:GetEditboxObject():SetText("1.5");
 slider:GetEditboxObject():SetScript("OnEnterPressed", function(self, value)
-	if (slider:GetEditboxObject():GetText() ~= "") then
-		local v = tonumber(slider:GetEditboxObject():GetText());
-		if (v == nil) then
-			-- Value must be a number
-			slider:GetEditboxObject():SetText(tostring(1.5));
-		else
-			if (v > maxValue) then
-				v = maxValue;
-			end
-			if (v < minValue) then
-				v = minValue;
-			end
-			slider:GetBaseSliderObject():SetValue(v);
-		end
-		slider:GetEditboxObject():ClearFocus();
-	end
+  if (slider:GetEditboxObject():GetText() ~= "") then
+    local v = tonumber(slider:GetEditboxObject():GetText());
+    if (v == nil) then
+      -- Value must be a number
+      slider:GetEditboxObject():SetText(tostring(1.5));
+    else
+      if (v > maxValue) then
+        v = maxValue;
+      end
+      if (v < minValue) then
+        v = minValue;
+      end
+      slider:GetBaseSliderObject():SetValue(v);
+    end
+    slider:GetEditboxObject():ClearFocus();
+  end
 end);
 slider.lowtext:SetText(tostring(minValue));
 slider.hightext:SetText(tostring(maxValue));
