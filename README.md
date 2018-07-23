@@ -13,7 +13,7 @@
 <a name="about" />
 
 # About 
-LibRedDropdown is another library that allows devs to add some common GUI elements into their addons. Initially this lib was created to replace Blizzard's UIDropDownMenu; now it contains 7 controls.
+LibRedDropdown is another library that allows devs to add some standard GUI elements into their addons. Initially this lib was created to replace Blizzard's UIDropDownMenu; now it contains 6 controls.
 <a name="api"/>
 <br /><br /><br />
 # API
@@ -240,10 +240,10 @@ end);
 ### Slider
 ``` lua
 local minValue, maxValue = 0.3, 3;
-local slider = VGUI.CreateSlider();
+local slider = libRedDropdown.CreateSlider();
+slider:SetParent(UIParent);
 slider:SetWidth(200);
 slider:SetPoint("CENTER", 0, 0);
-slider:SetParent(UIParent);
 slider:GetTextObject():SetText("Label");
 slider:GetBaseSliderObject():SetValueStep(0.1);
 slider:GetBaseSliderObject():SetMinMaxValues(minValue, maxValue);
