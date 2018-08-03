@@ -142,7 +142,7 @@ _boolean dontUpdateInternalList_: prevents this method from changing internal li
 ``` lua
 local t = { };
 for i = 1, 100 do
-  local spellName, _, spellIcon = GetSpellInfo(i);
+  local spellName, spellIcon = GetSpellInfo(i);
   table.insert(t, {
     icon = spellIcon,
     text = spellName,

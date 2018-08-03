@@ -1,0 +1,381 @@
+<ul>
+<li>About</li>
+<li>API
+<ul>
+<li>General notes</li>
+<li>DropdownMenu</li>
+<li>CheckBox</li>
+<li>Tri-state checkbox</li>
+<li>ColorPicker</li>
+<li>Button</li>
+<li>Slider</li>
+</ul>
+</li>
+<li>Examples</li>
+</ul>
+<h2>About</h2>
+<p>LibRedDropdown is one more library that allows devs to add some standard GUI elements into their addons. Initially this lib was created to replace Blizzard's UIDropDownMenu; now it contains 6 controls.&nbsp;</p>
+<h2>API</h2>
+<h3><span style="text-decoration: underline;">General notes</span></h3>
+<p>Getting lib instance:</p>
+<pre><code class="lua language-lua">local libRedDropdown = LibStub("LibRedDropdown-1.0");</code></pre>
+<p>All element constructors are static, you should call it like&nbsp;<code>lib.CreateControl()</code>&nbsp;(using dot). All element methods are instance methods, you should call it like&nbsp;<code>element:SomeMethod()</code>&nbsp;(using colon).<br />Basically, you should call&nbsp;<code>:SetParent</code>&nbsp;and&nbsp;<code>:SetPoint</code>&nbsp;methods for all elements after creating.</p>
+<p>&nbsp;</p>
+<h3><span style="text-decoration: underline;">DropdownMenu</span></h3>
+<p><img src="https://github.com/casualshammy/LibRedDropdown/blob/master/docs/dropdownmenu.gif" alt="" /><img src="https://raw.githubusercontent.com/casualshammy/LibRedDropdown/master/docs/dropdownmenu.gif" alt="" width="368" height="360" /></p>
+<p>Replacement for Blizzard's UIDropDownMenu.</p>
+<h4>Constructor</h4>
+<pre><code class="lua language-lua">local dropdownMenu = libRedDropdown.CreateDropdownMenu();</code></pre>
+
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Method</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr>
+<td>dropdownMenu:SetList(<em>table</em> entities, <em>boolean</em> dontUpdateInternalList)</td>
+<td>Sets list of entities. See examples below.</td>
+</tr>
+<tr>
+<td>dropdownMenu:GetButtonByText(<em>string</em> text)</td>
+<td>
+<p>Returns button with specified text on it (or <code>nil</code> if no button found).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3><span style="text-decoration: underline;">CheckBox</span></h3>
+<p>Checkbox with clickable label. It's inherited from Blizzard's CheckButton so you can use all its methods</p>
+
+<h4>Constructor</h4>
+<pre><code class="lua language-lua">local checkbox = libRedDropdown.CreateCheckBox();</code></pre>
+
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Method</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr>
+<td>checkbox:SetText(<em>string</em> text)</td>
+<td>Sets text of label.</td>
+</tr>
+<tr>
+<td>checkbox:GetText()</td>
+<td>Gets text of label.</td>
+</tr>
+<tr>
+<td>checkbox:GetTextObject()</td>
+<td>Returns text object of label (<em>FontString</em>).</td>
+</tr>
+<tr>
+<td>checkbox:SetOnClickHandler(<em>function</em> func)</td>
+<td>Sets <code>OnClick</code> handler. See examples below.</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<h3><span style="text-decoration: underline;">Tri-state checkbox</span></h3>
+<p><img src="https://github.com/casualshammy/LibRedDropdown/blob/master/docs/tristatechckbox.gif" alt="" /><img src="https://raw.githubusercontent.com/casualshammy/LibRedDropdown/master/docs/tristatechckbox.gif" alt="" /></p>
+<p>Checkbox with three states: disabled, enabled#1 and enabled#2</p>
+<h4>Constructor</h4>
+<pre><code class="lua language-lua">local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();</code></pre>
+
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Method</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr>
+<td>triStateCheckbox:SetTextEntries(<em>table</em> entries)</td>
+<td>Sets text values for each state. See examples below.</td>
+</tr>
+<tr>
+<td>triStateCheckbox:SetTriState(<em>number</em> state)</td>
+<td>Sets state of checkbox. See examples below.</td>
+</tr>
+<tr>
+<td>triStateCheckbox:GetTriState()</td>
+<td>Returns the state of checkbox (<em>number</em>). See examples below.</td>
+</tr>
+<tr>
+<td>triStateCheckbox:SetOnClickHandler(<em>function</em> func)</td>
+<td>Sets <code>OnClick</code> handler. See examples below.</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<h3><span style="text-decoration: underline;">ColorPicker</span></h3>
+<p><img src="https://github.com/casualshammy/LibRedDropdown/blob/master/docs/colorpicker.png" alt="" /><img src="https://raw.githubusercontent.com/casualshammy/LibRedDropdown/master/docs/colorpicker.png" alt="" /></p>
+<p>Small color frame with text label</p>
+<h4>Constructor</h4>
+<pre><code class="lua language-lua">local colorPicker = libRedDropdown.CreateColorPicker();</code></pre>
+
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Method</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr>
+<td>colorPicker:GetTextObject()</td>
+<td>Returns text object of label (<em>FontString</em>). See examples below.</td>
+</tr>
+<tr>
+<td>colorPicker:SetText(<em>string</em> text)</td>
+<td>Sets text of label. See examples below.</td>
+</tr>
+<tr>
+<td>colorPicker:GetText()</td>
+<td>Returns text of label (<em>string</em>). See examples below.</td>
+</tr>
+<tr>
+<td>colorPicker:SetColor(<em>number</em> red, <em>number</em> green, <em>number</em> blue)</td>
+<td>Sets color. Color values are between 0.0 and 1.0 See examples below.</td>
+</tr>
+<tr>
+<td>colorPicker:GetColor()</td>
+<td>Returns color (<em>number</em> red, <em>number</em> green, <em>number</em> blue). See examples below.</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<h3><span style="text-decoration: underline;">Button</span></h3>
+<p><img src="https://github.com/casualshammy/LibRedDropdown/blob/master/docs/button.gif" alt="" /><img src="https://raw.githubusercontent.com/casualshammy/LibRedDropdown/master/docs/button.gif" alt="" /></p>
+<p>Just a button. Has sharper edges than Blizzard's one!</p>
+<h4>Constructor</h4>
+<pre><code class="lua language-lua">local button = libRedDropdown.CreateButton();</code></pre>
+
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Method</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr>
+<td>button:GetTextObject()</td>
+<td>Returns text object of label (<em>FontString</em>).</td>
+</tr>
+<tr>
+<td>button:SetText(<em>string</em> text)</td>
+<td>Sets text of label. See examples below.</td>
+</tr>
+<tr>
+<td>button:GetText()</td>
+<td>Returns text of label (<em>string</em>). See examples below.</td>
+</tr>
+<tr>
+<td>button:SetGray(<em>boolean</em> gray)</td>
+<td>"Disables" button. It's not actually disabled, it's just grayed out.</td>
+</tr>
+<tr>
+<td>button:IsGrayed()</td>
+<td>Returns "disabled" state (<em>boolean</em>).</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<h3><span style="text-decoration: underline;">Slider</span></h3>
+<p><img src="https://github.com/casualshammy/LibRedDropdown/blob/master/docs/slider.gif" alt="" /><img src="https://raw.githubusercontent.com/casualshammy/LibRedDropdown/master/docs/slider.gif" alt="" /></p>
+<p>Slider with textbox. See examples below.</p>
+<h4>Constructor</h4>
+<pre><code class="lua language-lua">local slider = libRedDropdown.CreateSlider();</code></pre>
+
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Method</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr>
+<td>slider:GetTextObject()</td>
+<td>Returns text object of label (<em>FontString</em>).</td>
+</tr>
+<tr>
+<td>slider:GetBaseSliderObject()</td>
+<td>Returns slider object (<em>Slider</em>).</td>
+</tr>
+<tr>
+<td>slider:GetEditboxObject()</td>
+<td>Returns editbox object (<em>EditBox</em>).</td>
+</tr>
+<tr>
+<td>slider:GetLowTextObject()</td>
+<td>Returns text object of label of minimum value (<em>FontString</em>).</td>
+</tr>
+<tr>
+<td>slider:GetHighTextObject()</td>
+<td>Returns text object of label of maximum value (<em>FontString</em>).</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h2>Examples</h2>
+
+<h3 id="dropdownmenusetlist_table_entities_boolean_dontupdateinternallist">dropdownMenu:SetList(<em>table</em> entities, <em>boolean</em> dontUpdateInternalList)</h3>
+
+<p><em>table entites</em>: it is a table with information about buttons that DropdownMenu should display. Valid fields of each entity:  </p>
+
+<ul>
+<li>.text: button's text (string)  </li>
+
+<li>.font: button's text font (string)  </li>
+
+<li>.icon: button's icon (number)  </li>
+
+<li>.func: function that will be executed on user click (function)  </li>
+
+<li>.onEnter: function that will be executed on mouse enter (function)  </li>
+
+<li>.onLeave: function that will be executed on mouse leave (function)  </li>
+
+<li>.disabled: set to true to disable button - will be grayed out (boolean)  </li>
+
+<li>.dontCloseOnClick: set to true to prevent DropdownMenu from hiding when user clicks on button in list (boolean)  </li>
+</ul>
+
+<p><em>boolean dontUpdateInternalList</em>: prevents this method from changing internal list of buttons. Used internally by searchbox.  </p>
+
+<pre><code class=" lua language- lua">local t = { };
+for i = 1, 100 do
+  local spellName, spellIcon = GetSpellInfo(i);
+  table.insert(t, {
+    icon = spellIcon,
+    text = spellName,
+    onEnter = function(self)
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+      GameTooltip:SetSpellByID(i);
+      GameTooltip:Show();
+    end,
+    onLeave = function() GameTooltip:Hide(); end,
+    func = function() print(i, spellName); end,
+  });
+end
+dropdownMenu:SetList(t);
+</code></pre>
+
+<hr />
+
+<h3 id="checkboxsetonclickhandler_function_func">checkbox:SetOnClickHandler(<em>function</em> func)</h3>
+
+<p><em>function func</em>: function to execute on click</p>
+
+<pre><code class="lua language-lua">checkbox:SetOnClickHandler(function() print("Clicked!"); end);
+</code></pre>
+
+<hr />
+
+<h3 id="tristatecheckbox-1">Tri-state checkbox</h3>
+
+<pre><code class=" lua language- lua">local triStateCheckbox = libRedDropdown.CreateCheckBoxTristate();
+triStateCheckbox:SetTextEntries({
+  "Disabled",
+  "Enabled#1",
+  "Enabled#2",
+});
+triStateCheckbox:SetOnClickHandler(function(self)
+  if (self:GetTriState() == 0) then
+    print("Disabled");
+  elseif (self:GetTriState() == 1) then
+    print("Enabled#1");
+  else
+    print("Enabled#2");
+  end
+end);
+triStateCheckbox:SetTriState(1); -- Set to "Enabled#1"
+</code></pre>
+
+<hr />
+
+<h3 id="colorpicker-1">ColorPicker</h3>
+
+<pre><code class=" lua language- lua">local SOME_VALUE = { 1, 1, 0 };
+local colorPicker = libRedDropdown.CreateColorPicker();
+colorPicker:SetParent(UIParent);
+colorPicker:SetPoint("CENTER", 0, 0);
+colorPicker:SetText("Label");
+colorPicker:SetColor(1, 0, 0);
+colorPicker:SetScript("OnClick", function()
+  ColorPickerFrame:Hide();
+  local function callback(restore)
+    local r, g, b;
+    if (restore) then
+      r, g, b = unpack(restore);
+    else
+      r, g, b = ColorPickerFrame:GetColorRGB();
+    end
+    colorPicker:SetColor(r, g, b);
+    local red, green, blue = colorPicker:GetColor();
+    SOME_VALUE = { red, green, blue };
+  end
+  ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc =  
+      callback, callback, callback;
+  ColorPickerFrame:SetColorRGB(unpack(SOME_VALUE));
+  ColorPickerFrame.hasOpacity = false;
+  ColorPickerFrame.previousValues = SOME_VALUE;
+  ColorPickerFrame:Show();
+end);
+</code></pre>
+
+<hr />
+
+<h3 id="button-1">Button</h3>
+
+<pre><code class=" lua language- lua">local button = libRedDropdown.CreateButton();
+button:SetParent(UIParent);
+button:SetText("Click me!");
+button:SetWidth(110);
+button:SetHeight(20);
+button:SetPoint("CENTER", 0, 0);
+button:SetScript("OnClick", function(self, ...)
+  print(string.format("Button with label '%s' is clicked!", self:GetText()));
+end);
+</code></pre>
+
+<hr />
+
+<h3 id="slider-1">Slider</h3>
+
+<pre><code class=" lua language- lua">local minValue, maxValue = 0.3, 3;
+local slider = libRedDropdown.CreateSlider();
+slider:SetParent(UIParent);
+slider:SetWidth(200);
+slider:SetPoint("CENTER", 0, 0);
+slider:GetTextObject():SetText("Label");
+slider:GetBaseSliderObject():SetValueStep(0.1);
+slider:GetBaseSliderObject():SetMinMaxValues(minValue, maxValue);
+slider:GetBaseSliderObject():SetValue(1.5);
+slider:GetBaseSliderObject():SetScript("OnValueChanged", function(self, value)
+  local actualValue = tonumber(string_format("%.1f", value));
+  slider:GetEditboxObject():SetText(tostring(actualValue));
+end);
+slider:GetEditboxObject():SetText("1.5");
+slider:GetEditboxObject():SetScript("OnEnterPressed", function(self, value)
+  if (slider:GetEditboxObject():GetText() ~= "") then
+    local v = tonumber(slider:GetEditboxObject():GetText());
+    if (v == nil) then
+      -- Value must be a number
+      slider:GetEditboxObject():SetText(tostring(1.5));
+    else
+      if (v &gt; maxValue) then
+        v = maxValue;
+      end
+      if (v &lt; minValue) then
+        v = minValue;
+      end
+      slider:GetBaseSliderObject():SetValue(v);
+    end
+    slider:GetEditboxObject():ClearFocus();
+  end
+end);
+slider.lowtext:SetText(tostring(minValue));
+slider.hightext:SetText(tostring(maxValue));
+</code></pre>
+
