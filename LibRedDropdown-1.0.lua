@@ -1,5 +1,5 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 1);
+local lib = LibStub:NewLibrary(LIB_NAME, 2);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format = table.insert, string.find, string.format;
@@ -259,7 +259,7 @@ function lib.CreateColorPicker()
 	end
 	colorButton.SetColor = function(self, r, g, b)
 		self.colorSwatch:SetVertexColor(r, g, b);
-		lib.SetTooltip(self, string_format("R: %d, G: %d, B: %d", r, g, b));
+		lib.SetTooltip(self, string_format("R: %d, G: %d, B: %d", r*255, g*255, b*255));
 	end
 	colorButton.GetColor = function(self)
 		local r, g, b = self.colorSwatch:GetVertexColor();
