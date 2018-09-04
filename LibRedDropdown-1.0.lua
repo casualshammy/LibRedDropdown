@@ -276,8 +276,8 @@ function lib.CreateCheckBoxWithColorPicker()
 	checkBox.ColorButton:SetParent(checkBox);
 	checkBox.ColorButton:SetPoint("LEFT", 19, 0);
 	checkBox.ColorButton:Show();
-	checkBox.SetColor = checkBox.ColorButton.SetColor;
-	checkBox.GetColor = checkBox.ColorButton.GetColor;
+	checkBox.SetColor = function(self, ...) self.ColorButton:SetColor(...); end;
+	checkBox.GetColor = function(self) return self.ColorButton:GetColor(); end;
 	return checkBox;
 end
 
