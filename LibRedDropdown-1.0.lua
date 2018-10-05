@@ -138,12 +138,10 @@ function lib.CreateDropdownMenu()
 	selectorEx:HookScript("OnShow", function(self)
 		self:SetFrameStrata("TOOLTIP");
 		self.scrollArea:SetVerticalScroll(selectorEx.currentPosition == -1 and 0 or selectorEx.currentPosition);
-		print(self.currentPosition);
 	end);
 	selectorEx:HookScript("OnHide", function(self)
 		self.searchBox:SetText("");
 		self.currentPosition = self.scrollArea:GetVerticalScroll();
-		print(self.currentPosition);
 	end);
 	
 	return selectorEx;
