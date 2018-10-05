@@ -51,8 +51,7 @@ function lib.CreateDropdownMenu()
 			selectorEx.scrollArea:SetVerticalScroll(0);
 		end
 	end);
-	selectorEx:HookScript("OnHide", function() selectorEx.searchBox:SetText(""); end);
-	
+		
 	selectorEx.scrollArea = CreateFrame("ScrollFrame", nil, selectorEx, "UIPanelScrollFrameTemplate");
 	selectorEx.scrollArea:SetPoint("TOPLEFT", selectorEx, "TOPLEFT", 5, -30);
 	selectorEx.scrollArea:SetPoint("BOTTOMRIGHT", selectorEx, "BOTTOMRIGHT", -25, 5);
@@ -65,6 +64,7 @@ function lib.CreateDropdownMenu()
 	
 	selectorEx.buttons = { };
 	selectorEx.list = { };
+	selectorEx.currentPosition = -1;
 	
 	local function GetButton(s, counter)
 		if (s.buttons[counter] == nil) then
@@ -135,7 +135,16 @@ function lib.CreateDropdownMenu()
 	
 	selectorEx:SetList({});
 	selectorEx:Hide();
-	selectorEx:HookScript("OnShow", function(self) self:SetFrameStrata("TOOLTIP"); self.scrollArea:SetVerticalScroll(0); end);
+	selectorEx:HookScript("OnShow", function(self)
+		self:SetFrameStrata("TOOLTIP");
+		self.scrollArea:SetVerticalScroll(selectorEx.currentPosition == -1 and 0 or selectorEx.currentPosition);
+		print(self.currentPosition);
+	end);
+	selectorEx:HookScript("OnHide", function(self)
+		self.searchBox:SetText("");
+		self.currentPosition = self.scrollArea:GetVerticalScroll();
+		print(self.currentPosition);
+	end);
 	
 	return selectorEx;
 end
