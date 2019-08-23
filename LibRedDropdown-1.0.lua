@@ -118,7 +118,7 @@ function lib.CreateDropdownMenu()
 			if (value.checkBoxEnabled) then
 				button:SetCheckBoxVisible(true);
 				button:SetCheckBoxOnClickHandler(value.onCheckBoxClick);
-				button.SetChecked(value.checkBoxState);
+				button:SetChecked(value.checkBoxState);
 			end
 			button:SetScript("OnEnter", value.onEnter);
 			button:SetScript("OnLeave", value.onLeave);
@@ -382,7 +382,7 @@ function lib.CreateButton()
 	button.CheckBox = lib.CreateCheckBox();
 	button.CheckBox:SetParent(button);
 	button.CheckBox:SetText("");
-	button.CheckBox:SetPoint("LEFT", button, "LEFT", -5, 0);
+	button.CheckBox:SetPoint("LEFT", button, "LEFT", 5, 0);
 	
 	-- basic methods
 	button.SetGray = function(self, gray)
@@ -413,10 +413,10 @@ function lib.CreateButton()
 	end
 
 	button.GetChecked = function(self)
-		return self.CheckBox::GetChecked();
+		return self.CheckBox:GetChecked();
 	end
 
-	button:SetCheckBoxVisible = function(self, isVisible)
+	button.SetCheckBoxVisible = function(self, isVisible)
 		if (isVisible) then
 			self.CheckBox:Show();
 		else
@@ -424,7 +424,7 @@ function lib.CreateButton()
 		end
 	end
 
-	button:GetCheckBoxVisible = function(self)
+	button.GetCheckBoxVisible = function(self)
 		return button.CheckBox:IsVisible();
 	end
 
