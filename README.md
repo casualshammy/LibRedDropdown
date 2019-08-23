@@ -164,7 +164,7 @@ for i = 1, 100 do
     func = function() print(i, spellName); end,
     checkBoxEnabled = true,
     onCheckBoxClick = function(checkbox)
-		  if (checkbox:GetChecked()) then
+      if (checkbox:GetChecked()) then
         print("Checked!");
       end
     end,
