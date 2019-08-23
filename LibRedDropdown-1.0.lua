@@ -87,7 +87,7 @@ function lib.CreateDropdownMenu()
 		end
 	end
 	
-	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick
+	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled, value.onCheckBoxClick, value.checkBoxState
 	selectorEx.SetList = function(s, t, dontUpdateInternalList)
 		for _, button in pairs(s.buttons) do
 			button:SetGray(false);
@@ -96,6 +96,7 @@ function lib.CreateDropdownMenu()
 			button.Text:SetFont(button.font, button.fontSize, button.fontFlags);
 			button.Text:SetText(); -- not tested
 			button:SetScript("OnClick", nil);
+			button:SetCheckBoxVisible(false);
 		end
 		local counter = 1;
 		for _, value in pairs(t) do
@@ -114,6 +115,11 @@ function lib.CreateDropdownMenu()
 					s:Hide();
 				end
 			end);
+			if (value.checkBoxEnabled) then
+				button:SetCheckBoxVisible(true);
+				button:SetCheckBoxOnClickHandler(value.onCheckBoxClick);
+				button.SetChecked(value.checkBoxState);
+			end
 			button:SetScript("OnEnter", value.onEnter);
 			button:SetScript("OnLeave", value.onLeave);
 			button:Show();
@@ -371,7 +377,14 @@ function lib.CreateButton()
 	button.Text:SetTextColor(1, 0.82, 0, 1);
 	button:SetScript("OnMouseDown", function(self) self.Text:SetPoint("CENTER", 1, -1) end);
 	button:SetScript("OnMouseUp", function(self) self.Text:SetPoint("CENTER", 0, 0) end);
+
+	-- adding checkbox
+	button.CheckBox = lib.CreateCheckBox();
+	button.CheckBox:SetParent(button);
+	button.CheckBox:SetText("");
+	button.CheckBox:SetPoint("LEFT", button, "LEFT", -5, 0);
 	
+	-- basic methods
 	button.SetGray = function(self, gray)
 		self.Normal:SetColorTexture(unpack(gray and {0, 0, 0, 1} or {0.38, 0, 0, 1}));
 		self.grayed = gray;
@@ -381,6 +394,7 @@ function lib.CreateButton()
 		return self.grayed == true;
 	end
 	
+	-- text object methods
 	button.SetText = function(self, text)
 		self.Text:SetText(text);
 	end
@@ -391,6 +405,31 @@ function lib.CreateButton()
 	
 	button.GetTextObject = function(self)
 		return self.Text;
+	end
+
+	-- checkbox methods
+	button.SetChecked = function(self, checked)
+		self.CheckBox:SetChecked(checked);
+	end
+
+	button.GetChecked = function(self)
+		return self.CheckBox::GetChecked();
+	end
+
+	button:SetCheckBoxVisible = function(self, isVisible)
+		if (isVisible) then
+			self.CheckBox:Show();
+		else
+			self.CheckBox:Hide();
+		end
+	end
+
+	button:GetCheckBoxVisible = function(self)
+		return button.CheckBox:IsVisible();
+	end
+
+	button.SetCheckBoxOnClickHandler = function(self, func)
+		self.CheckBox:SetOnClickHandler(func);
 	end
 	
 	return button;
