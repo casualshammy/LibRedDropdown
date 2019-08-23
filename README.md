@@ -92,7 +92,7 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 <br /><a name="buttondesc" /><br />
 ## > Button
 ![buttor.gif](docs/button.gif)  
-Just a button. Has sharper edges than Blizzard's one!
+Just a button. But with optional independent checkbox inside it. Has sharper edges than Blizzard's one!
 ### Constructor
 ``` lua
 local button = libRedDropdown.CreateButton();
@@ -100,11 +100,17 @@ local button = libRedDropdown.CreateButton();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| button:GetTextObject()         | Returns text object of label (_FontString_).                |
-| button:SetText(_string_ text)  | Sets text of label. [Example](#example7)                              |
-| button:GetText()               | Returns text of label (_string_). [Example](#example7)                |
-| button:SetGray(_boolean_ gray) | "Disables" button. It's not actually disabled, it's just grayed out.  |
-| button:IsGrayed()              | Returns "disabled" state (_boolean_).                                 |
+| button:GetTextObject()                            | Returns text object of label (_FontString_).                           |
+| button:SetText(_string_ text)                     | Sets text of label. [Example](#example7)                               |
+| button:GetText()                                  | Returns text of label (_string_). [Example](#example7)                 |
+| button:SetGray(_boolean_ gray)                    | "Disables" button. It's not actually disabled, it's just grayed out.   |
+| button:IsGrayed()                                 | Returns "disabled" state (_boolean_).                                  |
+| button:SetChecked(_boolean_ checked)              | Check/unchecks internal checkbox.                                      |
+| button:GetChecked()                               | Returns true if internal checkbox is checked (_boolean_).              |
+| button:SetCheckBoxVisible(_boolean_ enabled)      | Enables/disables internal checkbox                                     |
+| button:GetCheckBoxVisible()                       | Returns true if internal checkbox is enabled (_boolean_).              |
+| button:SetCheckBoxOnClickHandler(_function_ func) | Sets handler for checkbox-checked event. See [this example](#example4) |
+
   
 <br /><a name="sliderdesc" /><br />
 ## > Slider
@@ -137,6 +143,9 @@ _table entites_: it is a table with information about buttons that DropdownMenu 
   * .onLeave: function that will be executed on mouse leave (function)  
   * .disabled: set to true to disable button - will be grayed out (boolean)  
   * .dontCloseOnClick: set to true to prevent DropdownMenu from hiding when user clicks on button in list (boolean)  
+  * .checkBoxEnabled: set to true to enable button's internal checkbox (boolean) 
+  * .onCheckBoxClick: handler for checkbox-checked event (function) 
+  * .checkBoxState: state (checked/unchecked) of button's internal checkbox (boolean) 
 
 _boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
 ``` lua
@@ -153,6 +162,13 @@ for i = 1, 100 do
     end,
     onLeave = function() GameTooltip:Hide(); end,
     func = function() print(i, spellName); end,
+    checkBoxEnabled = true,
+    onCheckBoxClick = function(checkbox)
+		  if (checkbox:GetChecked()) then
+        print("Checked!");
+      end
+    end,
+    checkBoxState = false,
   });
 end
 dropdownMenu:SetList(t);
