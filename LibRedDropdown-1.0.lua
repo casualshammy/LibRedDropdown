@@ -1,5 +1,5 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 2);
+local lib = LibStub:NewLibrary(LIB_NAME, 3);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format = table.insert, string.find, string.format;
@@ -79,6 +79,15 @@ function lib.CreateDropdownMenu()
 			button.Icon:SetWidth(20);
 			button.Icon:SetHeight(20);
 			button.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
+			button.closeButton = lib.CreateButton();
+			button.closeButton:SetParent(button);
+			button.closeButton:SetWidth(button:GetHeight());
+			button.closeButton:SetHeight(button:GetHeight());
+			button.closeButton:SetPoint("LEFT", button, "RIGHT", 3, 0);
+			button.closeButton.Text:SetText("X");
+			button.closeButton:Hide();
+			button.closeButton:SetScript("OnShow", function(self) button:SetWidth(button:GetWidth() - button.closeButton:GetWidth() - 3); end);
+			button.closeButton:SetScript("OnHide", function(self) button:SetWidth(button:GetWidth() + button.closeButton:GetWidth() + 3); end);
 			button:Hide();
 			s.buttons[counter] = button;
 			return button;
@@ -95,6 +104,8 @@ function lib.CreateDropdownMenu()
 			button.Icon:SetTexture();
 			button.Text:SetFont(button.font, button.fontSize, button.fontFlags);
 			button.Text:SetText(); -- not tested
+			button.closeButton:Hide();
+			button.closeButton:SetScript("OnClick", nil);
 			button:SetScript("OnClick", nil);
 			button:SetCheckBoxVisible(false);
 		end
@@ -119,6 +130,12 @@ function lib.CreateDropdownMenu()
 				button:SetCheckBoxVisible(true);
 				button:SetCheckBoxOnClickHandler(value.onCheckBoxClick);
 				button:SetChecked(value.checkBoxState);
+			end
+			if (value.onCloseButtonClick ~= nil) then
+				button.closeButton:Show();
+				button.closeButton:SetScript("OnClick", function()
+					value:onCloseButtonClick();
+				end);
 			end
 			button:SetScript("OnEnter", value.onEnter);
 			button:SetScript("OnLeave", value.onLeave);

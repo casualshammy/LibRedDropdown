@@ -146,6 +146,7 @@ _table entites_: it is a table with information about buttons that DropdownMenu 
   * .checkBoxEnabled: set to true to enable button's internal checkbox (boolean) 
   * .onCheckBoxClick: handler for checkbox-checked event (function) 
   * .checkBoxState: state (checked/unchecked) of button's internal checkbox (boolean) 
+  * .onCloseButtonClick: if not nil, than there will be a small "X" buttons at the right of buttons in the list. This callback will be called on press on this button (function) 
 
 _boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
 ``` lua
