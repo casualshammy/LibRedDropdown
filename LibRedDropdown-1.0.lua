@@ -1,8 +1,8 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 4);
+local lib = LibStub:NewLibrary(LIB_NAME, 5);
 if (not lib) then return; end -- No upgrade needed
 
-local table_insert, string_find, string_format = table.insert, string.find, string.format;
+local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
 
 local function table_contains_value(t, v)
 	for _, value in pairs(t) do
@@ -120,12 +120,14 @@ function lib.CreateDropdownMenu()
 				button:SetGray(true);
 			end
 			button.Icon:SetTexture(value.icon);
-			button:SetScript("OnClick", function()
-				value:func();
-				if (not value.dontCloseOnClick) then
-					s:Hide();
-				end
-			end);
+			if (value.func ~= nil) then
+				button:SetScript("OnClick", function()
+					value:func();
+					if (not value.dontCloseOnClick) then
+						s:Hide();
+					end
+				end);
+			end
 			if (value.checkBoxEnabled) then
 				button:SetCheckBoxVisible(true);
 				button:SetCheckBoxOnClickHandler(value.onCheckBoxClick);
