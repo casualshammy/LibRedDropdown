@@ -172,15 +172,53 @@ function lib.CreateDropdownMenu()
 	return selectorEx;
 end
 
+function lib.CreateTooltip()
+	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
+	frame:SetFrameStrata("TOOLTIP");
+	frame:SetBackdrop({
+		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = 1,
+		tileSize = 16,
+		edgeSize = 16,
+		insets = { left = 4, right = 4, top = 4, bottom = 4 }
+	});
+	frame:SetBackdropColor(0.2, 0.2, 0.2, 1);
+	frame:SetBackdropBorderColor(0.9, 0.9, 0.9, 0.4);
+	frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
+	frame:SetWidth(5);
+	frame:SetHeight(5);
+	frame.text = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
+	frame.SetText = function(self, text)
+		self.text:SetText(text);
+		local width = self.text:GetStringWidth();
+		local height = self.text:GetStringHeight();
+		self:SetSize(width + 20, height + 20);
+	end
+	frame.GetTextObject = function(self)
+		return self.text;
+	end
+	frame:Hide();
+	return frame;
+end
+
 function lib.SetTooltip(frame, text)
-	frame:HookScript("OnEnter", function(self, ...)
-		GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
-		GameTooltip:SetText(text);
-		GameTooltip:Show();
-	end);
-	frame:HookScript("OnLeave", function(self, ...)
-		GameTooltip:Hide();
-	end);
+	if (frame.LRDTooltip == nil) then
+		frame.LRDTooltip = lib.CreateTooltip();
+		frame.LRDTooltipText = text;
+		frame:HookScript("OnEnter", function(self, ...)
+			frame.LRDTooltip:ClearAllPoints();
+			frame.LRDTooltip:SetPoint("BOTTOM", frame, "TOP", 0, 0);
+			frame.LRDTooltip:SetText(frame.LRDTooltipText);
+			frame.LRDTooltip:Show();
+		end);
+		frame:HookScript("OnLeave", function(self, ...)
+			frame.LRDTooltip:Hide();
+		end);
+	else
+		frame.LRDTooltipText = text;
+	end
 end
 
 function lib.CreateCheckBox()

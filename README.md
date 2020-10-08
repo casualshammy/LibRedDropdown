@@ -8,6 +8,7 @@
   + [ColorPicker](#colorpickerdesc)
   + [Button](#buttondesc)
   + [Slider](#sliderdesc)
+  + [Tooltip](#tooltipdesc)
 + [Examples](#example1) 
  
 <a name="about" />
@@ -128,6 +129,19 @@ local slider = libRedDropdown.CreateSlider();
 | slider:GetEditboxObject()    | Returns editbox object (_EditBox_).                           |
 | slider:GetLowTextObject()    | Returns text object of label of minimum value (_FontString_). |
 | slider:GetHighTextObject()   | Returns text object of label of maximum value (_FontString_). |
+
+<br /><a name="tooltipdesc" /><br />
+## > Tooltip
+Very simple text tooltip. [Example](#example_tooltip)
+### Constructor
+``` lua
+local tooltip = libRedDropdown.CreateTooltip();
+```
+### Methods
+| Method | Description |
+|--------|-------------|
+| tooltip:SetText(_string_ text) | Sets text of label.                          |
+| tooltip:GetTextObject()        | Returns text object of label (_FontString_). |
   
 <br /><br /><a name="example1" /><br />
 # Examples  
@@ -290,5 +304,43 @@ slider:GetEditboxObject():SetScript("OnEnterPressed", function(self, value)
 end);
 slider.lowtext:SetText(tostring(minValue));
 slider.hightext:SetText(tostring(maxValue));
+```
+***
+<a name="example_tooltip" />
+
+### Tooltip
+``` lua
+-- self-initialized
+local button = libRedDropdown.CreateButton();
+button:SetParent(UIParent);
+button:SetText("Click me!");
+button:SetWidth(110);
+button:SetHeight(20);
+button:SetPoint("CENTER", 0, 0);
+button:SetScript("OnClick", function(self, ...)
+  print(string.format("Button with label '%s' is clicked!", self:GetText()));
+end);
+libRedDropdown.SetTooltip(button, "I'm tooltip!");
+
+-- manual
+local button = libRedDropdown.CreateButton();
+button:SetParent(UIParent);
+button:SetText("Click me!");
+button:SetWidth(110);
+button:SetHeight(20);
+button:SetPoint("CENTER", 0, 0);
+button:SetScript("OnClick", function(self, ...)
+  print(string.format("Button with label '%s' is clicked!", self:GetText()));
+end);
+local tooltip = libRedDropdown.CreateTooltip();
+button:HookScript("OnEnter", function(self, ...)
+	tooltip:ClearAllPoints();
+	tooltip:SetPoint("BOTTOM", button, "TOP", 0, 0);
+	tooltip:SetText("I'm tooltip!");
+	tooltip:Show();
+end);
+button:HookScript("OnLeave", function(self, ...)
+	tooltip:Hide();
+end);
 ```
 ***
