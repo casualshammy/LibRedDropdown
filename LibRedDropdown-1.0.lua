@@ -1,5 +1,5 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 5);
+local lib = LibStub:NewLibrary(LIB_NAME, 7);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
@@ -11,6 +11,10 @@ local function table_contains_value(t, v)
 		end
 	end
 	return false;
+end
+
+local function ColorizeText(text, r, g, b)
+	return string_format("|cff%02x%02x%02x%s|r", r*255, g*255, b*255, text);
 end
 
 function lib.CreateDropdownMenu()
@@ -188,18 +192,47 @@ function lib.CreateTooltip()
 	frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
 	frame:SetWidth(5);
 	frame:SetHeight(5);
-	frame.text = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+	frame:SetClampedToScreen(1);
+	frame:Hide();
+
+	frame.text = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalMed1");
 	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
+
+	frame.icon = frame:CreateTexture(nil, "BORDER");
+	frame.icon:SetSize(40, 40);
+	frame.icon:SetPoint("TOPRIGHT", frame, "TOPLEFT", -5, 0);
+	frame.icon:Hide();
+
 	frame.SetText = function(self, text)
+		self.text:ClearAllPoints();
+		self.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
 		self.text:SetText(text);
 		local width = self.text:GetStringWidth();
 		local height = self.text:GetStringHeight();
 		self:SetSize(width + 20, height + 20);
+		self.icon:Hide();
 	end
 	frame.GetTextObject = function(self)
 		return self.text;
 	end
-	frame:Hide();
+	frame.SetSpellById = function(self, spellID)
+		local spell = Spell:CreateFromSpellID(spellID);
+		spell:ContinueOnSpellLoad(function()
+			self.spellName = spell:GetSpellName();
+			self.spellDesc = spell:GetSpellDescription();
+			self.spellTexture = GetSpellTexture(spellID);
+			self:SetWidth(250);
+			self.text:ClearAllPoints();
+			self.text:SetPoint("TOPLEFT", 10, -10);
+			self.text:SetPoint("TOPRIGHT", -10, -10);
+			self.text:SetText(self.spellName .. "\n\n" .. self.spellDesc .. "\n" .. ColorizeText("Spell ID: " .. spellID, 91/255, 165/255, 249/255));
+			local height = self.text:GetStringHeight();
+			self:SetHeight(height + 20);
+			self.icon:SetTexture(self.spellTexture);
+			self.icon:Show();
+		end);
+	end
+	
 	return frame;
 end
 

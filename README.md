@@ -140,8 +140,9 @@ local tooltip = libRedDropdown.CreateTooltip();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| tooltip:SetText(_string_ text) | Sets text of label.                          |
-| tooltip:GetTextObject()        | Returns text object of label (_FontString_). |
+| tooltip:SetText(_string_ text)                | Sets text of label.                          |
+| tooltip:GetTextObject()                       | Returns text object of label (_FontString_). |
+| tooltip:SetSpellById(_number_ spellid)        | Sets spell as info for tooltip.              |
   
 <br /><br /><a name="example1" /><br />
 # Examples  
