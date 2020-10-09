@@ -84,11 +84,12 @@ local colorPicker = libRedDropdown.CreateColorPicker();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| colorPicker:GetTextObject()                                          | Returns text object of label (_FontString_). [Example](#example6)       |
-| colorPicker:SetText(_string_ text)                                   | Sets text of label. [Example](#example6)                                          |
-| colorPicker:GetText()                                                | Returns text of label (_string_). [Example](#example6)                            |
-| colorPicker:SetColor(_number_ red, _number_ green, _number_ blue)    | Sets color. Color values are between 0.0 and 1.0 [Example](#example6)             |
-| colorPicker:GetColor()                                               | Returns color (_number_ red, _number_ green, _number_ blue). [Example](#example6) |
+| colorPicker:GetTextObject()                                                          | Returns text object of label (_FontString_). [Example](#example6)                                                                                                           |
+| colorPicker:SetText(_string_ text)                                                   | Sets text of label. [Example](#example6)                                                                                                                                    |
+| colorPicker:GetText()                                                                | Returns text of label (_string_). [Example](#example6)                                                                                                                      |
+| colorPicker:SetColor(_number_ red, _number_ green, _number_ blue, _number_ alpha)    | Sets color. Color values are between 0.0 and 1.0. If *alpha* is nil, it will be interpreted as 1.0 [Example](#example6)                                                     |
+| colorPicker:GetColor()                                                               | Returns color (_number_ red, _number_ green, _number_ blue). [Example](#example6)                                                                                           |
+| colorPicker.func                                                                     | You should assign `function(self, r, g, b, a)` to this variable. This function will be executed when any value (red, green, blue, or alpha) is changed [Example](#example6) |
   
 <br /><a name="buttondesc" /><br />
 ## > Button
@@ -224,32 +225,15 @@ triStateCheckbox:SetTriState(1); -- Set to "Enabled#1"
 
 ### ColorPicker
 ``` lua
-local SOME_VALUE = { 1, 1, 0 };
 local colorPicker = libRedDropdown.CreateColorPicker();
 colorPicker:SetParent(UIParent);
 colorPicker:SetPoint("CENTER", 0, 0);
 colorPicker:SetText("Label");
-colorPicker:SetColor(1, 0, 0);
-colorPicker:SetScript("OnClick", function()
-  ColorPickerFrame:Hide();
-  local function callback(restore)
-    local r, g, b;
-    if (restore) then
-      r, g, b = unpack(restore);
-    else
-      r, g, b = ColorPickerFrame:GetColorRGB();
-    end
-    colorPicker:SetColor(r, g, b);
-    local red, green, blue = colorPicker:GetColor();
-    SOME_VALUE = { red, green, blue };
-  end
-  ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc =  
-      callback, callback, callback;
-  ColorPickerFrame:SetColorRGB(unpack(SOME_VALUE));
-  ColorPickerFrame.hasOpacity = false;
-  ColorPickerFrame.previousValues = SOME_VALUE;
-  ColorPickerFrame:Show();
-end);
+colorPicker:SetColor(1, 1, 0, 1);
+colorPicker.func = function(self, r, g, b, a)
+	-- some code that handles new value of r, g, b, a
+end
+colorPicker:Show();
 ```
 ***
 <a name="example7" />

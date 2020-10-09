@@ -1,5 +1,5 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 7);
+local lib = LibStub:NewLibrary(LIB_NAME, 8);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
@@ -360,14 +360,41 @@ function lib.CreateColorPicker()
 	colorButton.GetText = function(self)
 		return self.text:GetText();
 	end
-	colorButton.SetColor = function(self, r, g, b)
-		self.colorSwatch:SetVertexColor(r, g, b);
-		lib.SetTooltip(self, string_format("R: %d, G: %d, B: %d", r*255, g*255, b*255));
+	colorButton.SetColor = function(self, r, g, b, a)
+		if (a == nil) then a = 1; end
+		self.colorSwatch:SetVertexColor(r, g, b, a);
+		lib.SetTooltip(self, string_format("R: %d, G: %d, B: %d, A: %d", r*255, g*255, b*255, a*255));
 	end
 	colorButton.GetColor = function(self)
-		local r, g, b = self.colorSwatch:GetVertexColor();
-		return r, g, b;
+		local r, g, b, a = self.colorSwatch:GetVertexColor();
+		return r, g, b, a;
 	end
+
+	--colorButton.func;
+
+	colorButton:SetScript("OnClick", function(self)
+		ColorPickerFrame:Hide();
+		local function callback(restore)
+			local r, g, b, a;
+			if (restore) then
+				r, g, b, a = unpack(restore);
+			else
+				a, r, g, b = 1-OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB();
+			end
+			self:SetColor(r, g, b, a);
+			if (self.func ~= nil) then
+				self:func(r, g, b, a);
+			end
+		end
+		ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = callback, callback, callback;
+		local colorR, colorG, colorB, colorA = self:GetColor();
+		ColorPickerFrame:SetColorRGB(colorR, colorG, colorB);
+		ColorPickerFrame.hasOpacity = true;
+		ColorPickerFrame.opacity = 1-colorA;
+		ColorPickerFrame.previousValues = { colorR, colorG, colorB, colorA };
+		ColorPickerFrame:Show();
+	end);
+
 	return colorButton;
 end
 
