@@ -90,6 +90,10 @@ function lib.CreateDropdownMenu()
 			line:SetPoint("RIGHT", 0, 0);
 			line:Show();
 			local button = lib.CreateButton();
+			local originalShow = button.Show;
+			button.Show = function(self) originalShow(self); line:Show(); end
+			local originalHide = button.Hide;
+			button.Hide = function(self) originalHide(self); line:Hide(); end
 			button:SetParent(line);
 			button.font, button.fontSize, button.fontFlags = button.Text:GetFont();
 
