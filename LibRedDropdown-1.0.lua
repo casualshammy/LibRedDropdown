@@ -1,8 +1,11 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 8);
+local lib = LibStub:NewLibrary(LIB_NAME, 9);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
+
+local BUTTON_COLOR_NORMAL = {0.38, 0, 0, 1};
+local BUTTON_COLOR_GOLD = {0.38, 0.0, 0.19, 1};
 
 local function table_contains_value(t, v)
 	for _, value in pairs(t) do
@@ -18,6 +21,8 @@ local function ColorizeText(text, r, g, b)
 end
 
 function lib.CreateDropdownMenu()
+	local SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON = 3;
+
 	local selectorEx = CreateFrame("Frame", nil, UIParent);
 	selectorEx:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
 	selectorEx:SetSize(350, 300);
@@ -79,7 +84,7 @@ function lib.CreateDropdownMenu()
 			button:SetHeight(20);
 			button:SetPoint("TOPLEFT", 23, -counter * 22 + 20);
 			button.Icon = button:CreateTexture();
-			button.Icon:SetPoint("RIGHT", button, "LEFT", -3, 0);
+			button.Icon:SetPoint("RIGHT", button, "LEFT", -SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
 			button.Icon:SetWidth(20);
 			button.Icon:SetHeight(20);
 			button.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
@@ -87,11 +92,11 @@ function lib.CreateDropdownMenu()
 			button.closeButton:SetParent(button);
 			button.closeButton:SetWidth(button:GetHeight());
 			button.closeButton:SetHeight(button:GetHeight());
-			button.closeButton:SetPoint("LEFT", button, "RIGHT", 3, 0);
+			button.closeButton:SetPoint("LEFT", button, "RIGHT", SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
 			button.closeButton.Text:SetText("X");
 			button.closeButton:Hide();
-			button.closeButton:SetScript("OnShow", function(self) button:SetWidth(button:GetWidth() - button.closeButton:GetWidth() - 3); end);
-			button.closeButton:SetScript("OnHide", function(self) button:SetWidth(button:GetWidth() + button.closeButton:GetWidth() + 3); end);
+			button.closeButton:SetScript("OnShow", function(self) button:SetWidth(button:GetWidth() - button.closeButton:GetWidth() - SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON); end);
+			button.closeButton:SetScript("OnHide", function(self) button:SetWidth(button:GetWidth() + button.closeButton:GetWidth() + SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON); end);
 			button:Hide();
 			s.buttons[counter] = button;
 			return button;
@@ -100,7 +105,8 @@ function lib.CreateDropdownMenu()
 		end
 	end
 	
-	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled, value.onCheckBoxClick, value.checkBoxState
+	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled, 
+	--value.onCheckBoxClick, value.checkBoxState, onCloseButtonClick, buttonColor
 	selectorEx.SetList = function(s, t, dontUpdateInternalList)
 		for _, button in pairs(s.buttons) do
 			button:SetGray(false);
@@ -112,6 +118,7 @@ function lib.CreateDropdownMenu()
 			button.closeButton:SetScript("OnClick", nil);
 			button:SetScript("OnClick", nil);
 			button:SetCheckBoxVisible(false);
+			button.Normal:SetColorTexture(unpack(BUTTON_COLOR_NORMAL));
 		end
 		local counter = 1;
 		for _, value in pairs(t) do
@@ -143,6 +150,9 @@ function lib.CreateDropdownMenu()
 					value:onCloseButtonClick();
 				end);
 			end
+			if (value.buttonColor ~= nil) then
+				button.Normal:SetColorTexture(unpack(value.buttonColor));
+			end
 			button:SetScript("OnEnter", value.onEnter);
 			button:SetScript("OnLeave", value.onLeave);
 			button:Show();
@@ -167,6 +177,15 @@ function lib.CreateDropdownMenu()
 	selectorEx:HookScript("OnShow", function(self)
 		self:SetFrameStrata("TOOLTIP");
 		self.scrollArea:SetVerticalScroll(selectorEx.currentPosition == -1 and 0 or selectorEx.currentPosition);
+		self.scrollAreaChildFrame:SetWidth(self:GetWidth() - 62);
+		self.scrollAreaChildFrame:SetHeight(self:GetHeight() - 12);
+		for _, button in pairs(self.buttons) do
+			if (button.closeButton:IsShown()) then
+				button:SetWidth(self:GetWidth() - 55 - SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON - button.closeButton:GetWidth());
+			else
+				button:SetWidth(self:GetWidth() - 55);
+			end
+		end
 	end);
 	selectorEx:HookScript("OnHide", function(self)
 		self.searchBox:SetText("");
@@ -476,7 +495,7 @@ function lib.CreateButton()
 	button.Normal = button:CreateTexture(nil, "ARTWORK");
 	button.Normal:SetPoint("TOPLEFT", 2, -2);
 	button.Normal:SetPoint("BOTTOMRIGHT", -2, 2);
-	button.Normal:SetColorTexture(unpack({0.38, 0, 0, 1}));
+	button.Normal:SetColorTexture(unpack(BUTTON_COLOR_NORMAL));
 	button:SetNormalTexture(button.Normal);
 	button.Disabled = button:CreateTexture(nil, "OVERLAY");
 	button.Disabled:SetPoint("TOPLEFT", 3, -3);
@@ -503,7 +522,7 @@ function lib.CreateButton()
 	
 	-- basic methods
 	button.SetGray = function(self, gray)
-		self.Normal:SetColorTexture(unpack(gray and {0, 0, 0, 1} or {0.38, 0, 0, 1}));
+		self.Normal:SetColorTexture(unpack(gray and {0, 0, 0, 1} or BUTTON_COLOR_NORMAL));
 		self.grayed = gray;
 	end
 	
@@ -621,4 +640,60 @@ function lib.CreateDebugWindow()
 	popup.Background = bg;
 		
 	return popup;
+end
+
+function lib.CreateDropdown()
+	local button = lib.CreateButton();
+	button.menu = lib.CreateDropdownMenu();
+
+	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled, value.onCheckBoxClick, value.checkBoxState, onCloseButtonClick
+	button.list = { };
+	button.SetList = function(self, list)
+		local wasVisible = false;
+		if (self.menu:IsVisible()) then
+			self.menu:Hide();
+			wasVisible = true;
+		end
+		for _, value in pairs(list) do
+			value.disabled = nil;
+			value.dontCloseOnClick = nil;
+			value.checkBoxEnabled = nil;
+			value.onCloseButtonClick = nil;
+			local oldFunc = value.func;
+			value.func = function(clickedValue, ...)
+				if (oldFunc ~= nil) then oldFunc(clickedValue, ...); end
+				for _, value in pairs(button.list) do
+					value.selected = nil;
+				end
+				clickedValue.selected = true;
+				button:SetText(clickedValue.text);
+				button:SetList(button.list);
+			end;
+			if (value.selected) then
+				value.buttonColor = BUTTON_COLOR_GOLD;
+				button:SetText(value.text);
+			else
+				value.buttonColor = nil;
+			end
+		end
+		self.list = list;
+		self.menu:SetList(self.list);
+		if (wasVisible) then
+			button:Click();
+		end
+	end
+	
+	button:SetScript("OnClick", function(self, ...)
+		if (self.menu:IsVisible()) then
+			self.menu:Hide();
+		else
+			self.menu:SetParent(self);
+			self.menu:ClearAllPoints();
+			self.menu:SetPoint("TOP", self, "BOTTOM", 0, 0);
+			self.menu:SetSize(self:GetWidth(), self.menu:GetHeight());
+			self.menu:Show();
+		end
+	end);
+
+	return button;
 end
