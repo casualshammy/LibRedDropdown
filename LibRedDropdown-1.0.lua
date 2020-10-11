@@ -5,7 +5,6 @@ if (not lib) then return; end -- No upgrade needed
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
 
 local BUTTON_COLOR_NORMAL = {0.38, 0, 0, 1};
-local BUTTON_COLOR_GOLD = {0.38, 0.0, 0.19, 1};
 
 local function table_contains_value(t, v)
 	for _, value in pairs(t) do
@@ -22,23 +21,26 @@ end
 
 function lib.CreateDropdownMenu()
 	local SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON = 3;
+	local SCROLL_AREA_Y_OFFSET = -30;
 
-	local selectorEx = CreateFrame("Frame", nil, UIParent);
+	local selectorEx = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
 	selectorEx:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
 	selectorEx:SetSize(350, 300);
-	selectorEx.texture = selectorEx:CreateTexture();
-	selectorEx.texture:SetAllPoints(selectorEx);
-	selectorEx.texture:SetColorTexture(0, 0, 0, 1);
-	
-	selectorEx.searchLabel = selectorEx:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-	selectorEx.searchLabel:SetPoint("TOPLEFT", 5, -10);
-	selectorEx.searchLabel:SetJustifyH("LEFT");
-	selectorEx.searchLabel:SetText("Search:"); -- todo:localize
-	
+	selectorEx:SetBackdrop({
+		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = 1,
+		tileSize = 16,
+		edgeSize = 16,
+		insets = { left = 4, right = 4, top = 4, bottom = 4 }
+	});
+	selectorEx:SetBackdropColor(0.1, 0.1, 0.2, 1);
+	selectorEx:SetBackdropBorderColor(0.8, 0.8, 0.9, 0.4);
+
 	selectorEx.searchBox = CreateFrame("EditBox", nil, selectorEx, "InputBoxTemplate");
 	selectorEx.searchBox:SetAutoFocus(false);
 	selectorEx.searchBox:SetFontObject(GameFontHighlightSmall);
-	selectorEx.searchBox:SetPoint("LEFT", selectorEx.searchLabel, "RIGHT", 10, 0);
+	selectorEx.searchBox:SetPoint("TOPLEFT", selectorEx, "TOPLEFT", 10, -5);
 	selectorEx.searchBox:SetPoint("RIGHT", selectorEx, "RIGHT", -10, 0);
 	selectorEx.searchBox:SetHeight(20);
 	selectorEx.searchBox:SetWidth(175);
@@ -60,15 +62,20 @@ function lib.CreateDropdownMenu()
 			selectorEx.scrollArea:SetVerticalScroll(0);
 		end
 	end);
+	local searchBoxText = selectorEx.searchBox:CreateFontString(nil, "ARTWORK", "GameFontDisable");
+	searchBoxText:SetPoint("LEFT", 0, 0);
+	searchBoxText:SetText("Click to search...");
+	selectorEx.searchBox:SetScript("OnEditFocusGained", function() searchBoxText:Hide(); end);
+	selectorEx.searchBox:SetScript("OnEditFocusLost", function() searchBoxText:Show(); end);
 		
 	selectorEx.scrollArea = CreateFrame("ScrollFrame", nil, selectorEx, "UIPanelScrollFrameTemplate");
-	selectorEx.scrollArea:SetPoint("TOPLEFT", selectorEx, "TOPLEFT", 5, -30);
-	selectorEx.scrollArea:SetPoint("BOTTOMRIGHT", selectorEx, "BOTTOMRIGHT", -25, 5);
+	selectorEx.scrollArea:SetPoint("TOPLEFT", selectorEx, "TOPLEFT", 5, SCROLL_AREA_Y_OFFSET);
+	selectorEx.scrollArea:SetPoint("BOTTOMRIGHT", selectorEx, "BOTTOMRIGHT", -30, 5);
 	selectorEx.scrollArea:Show();
 	
 	selectorEx.scrollAreaChildFrame = CreateFrame("Frame", nil, selectorEx.scrollArea);
 	selectorEx.scrollArea:SetScrollChild(selectorEx.scrollAreaChildFrame);
-	selectorEx.scrollAreaChildFrame:SetWidth(288);
+	selectorEx.scrollAreaChildFrame:SetWidth(selectorEx.scrollArea:GetWidth() - 10);
 	selectorEx.scrollAreaChildFrame:SetHeight(288);
 	
 	selectorEx.buttons = { };
@@ -77,27 +84,33 @@ function lib.CreateDropdownMenu()
 	
 	local function GetButton(s, counter)
 		if (s.buttons[counter] == nil) then
+			local line = CreateFrame("frame", nil, s.scrollAreaChildFrame);
+			line:SetHeight(20);
+			line:SetPoint("TOPLEFT", 5, -counter * 22 + 20);
+			line:SetPoint("RIGHT", 0, 0);
+			line:Show();
 			local button = lib.CreateButton();
-			button:SetParent(s.scrollAreaChildFrame);
+			button:SetParent(line);
 			button.font, button.fontSize, button.fontFlags = button.Text:GetFont();
-			button:SetWidth(295);
-			button:SetHeight(20);
-			button:SetPoint("TOPLEFT", 23, -counter * 22 + 20);
+
 			button.Icon = button:CreateTexture();
-			button.Icon:SetPoint("RIGHT", button, "LEFT", -SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
-			button.Icon:SetWidth(20);
-			button.Icon:SetHeight(20);
 			button.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93);
+			button.Icon:SetPoint("LEFT", line, "LEFT", 0, 0);
+			button.Icon:SetWidth(line:GetHeight());
+			button.Icon:SetHeight(line:GetHeight());
+
 			button.closeButton = lib.CreateButton();
-			button.closeButton:SetParent(button);
-			button.closeButton:SetWidth(button:GetHeight());
-			button.closeButton:SetHeight(button:GetHeight());
-			button.closeButton:SetPoint("LEFT", button, "RIGHT", SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
+			button.closeButton:SetParent(line);
+			button.closeButton:SetWidth(line:GetHeight());
+			button.closeButton:SetHeight(line:GetHeight());
+			button.closeButton:SetPoint("RIGHT", line, "RIGHT", 0, 0);
 			button.closeButton.Text:SetText("X");
-			button.closeButton:Hide();
-			button.closeButton:SetScript("OnShow", function(self) button:SetWidth(button:GetWidth() - button.closeButton:GetWidth() - SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON); end);
-			button.closeButton:SetScript("OnHide", function(self) button:SetWidth(button:GetWidth() + button.closeButton:GetWidth() + SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON); end);
+
+			button:SetHeight(line:GetHeight());
+			button:SetPoint("LEFT", button.Icon, "RIGHT", SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
+			button:SetPoint("RIGHT", button.closeButton, "LEFT", -SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
 			button:Hide();
+
 			s.buttons[counter] = button;
 			return button;
 		else
@@ -111,7 +124,6 @@ function lib.CreateDropdownMenu()
 		for _, button in pairs(s.buttons) do
 			button:SetGray(false);
 			button:Hide();
-			button.Icon:SetTexture();
 			button.Text:SetFont(button.font, button.fontSize, button.fontFlags);
 			button.Text:SetText(); -- not tested
 			button.closeButton:Hide();
@@ -130,7 +142,14 @@ function lib.CreateDropdownMenu()
 			if (value.disabled) then
 				button:SetGray(true);
 			end
-			button.Icon:SetTexture(value.icon);
+			if (value.icon ~= nil) then
+				button.Icon:SetTexture(value.icon);
+				button.Icon:Show();
+				button:SetPoint("LEFT", button.Icon, "RIGHT", SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
+			else
+				button.Icon:Hide();
+				button:SetPoint("LEFT", button:GetParent(), "LEFT", 0, 0);
+			end
 			if (value.func ~= nil) then
 				button:SetScript("OnClick", function()
 					value:func();
@@ -146,9 +165,13 @@ function lib.CreateDropdownMenu()
 			end
 			if (value.onCloseButtonClick ~= nil) then
 				button.closeButton:Show();
+				button:SetPoint("RIGHT", button.closeButton, "LEFT", -SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON, 0);
 				button.closeButton:SetScript("OnClick", function()
 					value:onCloseButtonClick();
 				end);
+			else
+				button.closeButton:Hide();
+				button:SetPoint("RIGHT", button:GetParent(), "RIGHT", 0, 0);
 			end
 			if (value.buttonColor ~= nil) then
 				button.Normal:SetColorTexture(unpack(value.buttonColor));
@@ -176,16 +199,15 @@ function lib.CreateDropdownMenu()
 	selectorEx:Hide();
 	selectorEx:HookScript("OnShow", function(self)
 		self:SetFrameStrata("TOOLTIP");
-		self.scrollArea:SetVerticalScroll(selectorEx.currentPosition == -1 and 0 or selectorEx.currentPosition);
-		self.scrollAreaChildFrame:SetWidth(self:GetWidth() - 62);
-		self.scrollAreaChildFrame:SetHeight(self:GetHeight() - 12);
-		for _, button in pairs(self.buttons) do
-			if (button.closeButton:IsShown()) then
-				button:SetWidth(self:GetWidth() - 55 - SPACE_BETWEEN_BUTTON_AND_CLOSEBUTTON - button.closeButton:GetWidth());
-			else
-				button:SetWidth(self:GetWidth() - 55);
-			end
+
+		if (self.autoAdjustHeight and #self.buttons > 0) then
+			local point, parent, pointParent, xOffset, yOffset = self.buttons[#self.buttons]:GetPoint();
+			self:SetHeight(-SCROLL_AREA_Y_OFFSET + -yOffset + self.buttons[#self.buttons]:GetHeight() + 10);
 		end
+
+		self.scrollArea:SetVerticalScroll(self.currentPosition == -1 and 0 or self.currentPosition);
+		self.scrollAreaChildFrame:SetWidth(self.scrollArea:GetWidth());
+		self.scrollAreaChildFrame:SetHeight(self:GetHeight() - 12);
 	end);
 	selectorEx:HookScript("OnHide", function(self)
 		self.searchBox:SetText("");
@@ -645,6 +667,7 @@ end
 function lib.CreateDropdown()
 	local button = lib.CreateButton();
 	button.menu = lib.CreateDropdownMenu();
+	button.menu.autoAdjustHeight = true;
 
 	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled, value.onCheckBoxClick, value.checkBoxState, onCloseButtonClick
 	button.list = { };
@@ -670,10 +693,12 @@ function lib.CreateDropdown()
 				button:SetList(button.list);
 			end;
 			if (value.selected) then
-				value.buttonColor = BUTTON_COLOR_GOLD;
+				value.buttonColor = {0.38, 0.0, 0.38, 1};
+				value.icon = 450908; --134337
 				button:SetText(value.text);
 			else
 				value.buttonColor = nil;
+				value.icon = nil;
 			end
 		end
 		self.list = list;
