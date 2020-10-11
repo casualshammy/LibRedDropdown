@@ -162,7 +162,8 @@ _table entites_: it is a table with information about buttons that DropdownMenu 
   * .checkBoxEnabled: set to true to enable button's internal checkbox (boolean) 
   * .onCheckBoxClick: handler for checkbox-checked event (function) 
   * .checkBoxState: state (checked/unchecked) of button's internal checkbox (boolean) 
-  * .onCloseButtonClick: if not nil, than there will be a small "X" buttons at the right of buttons in the list. This callback will be called on press on this button (function) 
+  * .onCloseButtonClick: if not nil, then there will be a small "X" buttons at the right of buttons in the list. This callback will be called on press on this button (function) 
+  * .buttonColor: if not nil, then button will have this color. Format: { red (0.0 - 1.0), green (0.0 - 1.0), blue (0.0 - 1.0), alpha (0.0 - 1.0) }
 
 _boolean dontUpdateInternalList_: prevents this method from changing internal list of buttons. Used internally by searchbox.  
 ``` lua
@@ -186,6 +187,7 @@ for i = 1, 100 do
       end
     end,
     checkBoxState = false,
+	buttonColor = {1, 1, 0, 1},
   });
 end
 dropdownMenu:SetList(t);
