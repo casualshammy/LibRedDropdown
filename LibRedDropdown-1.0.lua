@@ -1,8 +1,11 @@
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 9);
+local lib = LibStub:NewLibrary(LIB_NAME, 10);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
+
+local IndentationLib = IndentationLib;
+local AceGUI = LibStub("AceGUI-3.0");
 
 local BUTTON_COLOR_NORMAL = {0.38, 0, 0, 1};
 
@@ -511,16 +514,16 @@ end
 function lib.CreateButton()
 	local button = CreateFrame("Button");
 	button.Background = button:CreateTexture(nil, "BORDER");
-	button.Background:SetPoint("TOPLEFT", 1, -1);
-	button.Background:SetPoint("BOTTOMRIGHT", -1, 1);
+	button.Background:SetPoint("TOPLEFT", 2, -2);
+	button.Background:SetPoint("BOTTOMRIGHT", -2, 2);
 	button.Background:SetColorTexture(0, 0, 0, 1);
 	button.Border = button:CreateTexture(nil, "BACKGROUND");
 	button.Border:SetPoint("TOPLEFT", 0, 0);
 	button.Border:SetPoint("BOTTOMRIGHT", 0, 0);
 	button.Border:SetColorTexture(unpack({0.73, 0.26, 0.21, 1}));
 	button.Normal = button:CreateTexture(nil, "ARTWORK");
-	button.Normal:SetPoint("TOPLEFT", 2, -2);
-	button.Normal:SetPoint("BOTTOMRIGHT", -2, 2);
+	button.Normal:SetPoint("TOPLEFT", 3, -3);
+	button.Normal:SetPoint("BOTTOMRIGHT", -3, 3);
 	button.Normal:SetColorTexture(unpack(BUTTON_COLOR_NORMAL));
 	button:SetNormalTexture(button.Normal);
 	button.Disabled = button:CreateTexture(nil, "OVERLAY");
@@ -666,6 +669,64 @@ function lib.CreateDebugWindow()
 	popup.Background = bg;
 		
 	return popup;
+end
+
+local function GetLuaEditorTheme()
+	local theme = { };
+	theme["Table"] = "|c00AFC0E5";
+    theme["Arithmetic"] = "|c00E0E2E4";
+    theme["Relational"] = "|c00B3B689";
+    theme["Logical"] = "|c0093C763";
+    theme["Special"] = "|c00AFC0E5";
+    theme["Keyword"] = "|c0093C763";
+    theme["Comment"] = "|c0066747B";
+    theme["Number"] = "|c00FFCD22";
+	theme["String"] = "|c00EC7600";
+	
+	local color_scheme = { };
+	color_scheme[IndentationLib.tokens.TOKEN_SPECIAL] = theme["Special"]
+	color_scheme[IndentationLib.tokens.TOKEN_KEYWORD] = theme["Keyword"]
+	color_scheme[IndentationLib.tokens.TOKEN_COMMENT_SHORT] = theme["Comment"]
+	color_scheme[IndentationLib.tokens.TOKEN_COMMENT_LONG] = theme["Comment"]
+	color_scheme[IndentationLib.tokens.TOKEN_NUMBER] = theme["Number"]
+	color_scheme[IndentationLib.tokens.TOKEN_STRING] = theme["String"]
+
+	color_scheme["..."] = theme["Table"]
+	color_scheme["{"] = theme["Table"]
+	color_scheme["}"] = theme["Table"]
+	color_scheme["["] = theme["Table"]
+	color_scheme["]"] = theme["Table"]
+
+	color_scheme["+"] = theme["Arithmetic"]
+	color_scheme["-"] = theme["Arithmetic"]
+	color_scheme["/"] = theme["Arithmetic"]
+	color_scheme["*"] = theme["Arithmetic"]
+	color_scheme[".."] = theme["Arithmetic"]
+
+	color_scheme["=="] = theme["Relational"]
+	color_scheme["<"] = theme["Relational"]
+	color_scheme["<="] = theme["Relational"]
+	color_scheme[">"] = theme["Relational"]
+	color_scheme[">="] = theme["Relational"]
+	color_scheme["~="] = theme["Relational"]
+
+	color_scheme["and"] = theme["Logical"]
+	color_scheme["or"] = theme["Logical"]
+	color_scheme["not"] = theme["Logical"]
+	return color_scheme;
+end
+
+function lib.CreateLuaEditor()
+	local window = AceGUI:Create("Frame");
+	window:Hide();
+	window:SetTitle("Lua editor");
+	--window:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end);
+	window:SetLayout("Fill");
+	window.Editor = AceGUI:Create("MultiLineEditBox");
+	IndentationLib.enable(window.Editor.editBox, GetLuaEditorTheme(), 4);
+	window:AddChild(window.Editor);
+
+	return window;
 end
 
 function lib.CreateDropdown()
