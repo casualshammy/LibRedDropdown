@@ -6,16 +6,7 @@ manual-changelog:
     filename: CHANGELOG.html
     markup-type: html
 
-externals:
-    libs/LibStub:
-        url: https://repos.wowace.com/wow/libstub/trunk
-        tag: latest
-    libs/CallbackHandler-1.0:
-        url: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-        tag: latest
-    libs/AceGUI-3.0:
-        url: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
-        tag: latest
+enable-nolib-creation: no
 
 ignore:
     - docs
