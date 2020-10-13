@@ -5,7 +5,6 @@ if (not lib) then return; end -- No upgrade needed
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
 
 local IndentationLib = IndentationLib;
-local AceGUI = LibStub("AceGUI-3.0");
 
 local BUTTON_COLOR_NORMAL = {0.38, 0, 0, 1};
 
@@ -238,59 +237,69 @@ function lib.CreateTooltip()
 	frame:SetBackdropColor(0.2, 0.2, 0.2, 1);
 	frame:SetBackdropBorderColor(0.9, 0.9, 0.9, 0.4);
 	frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
-	frame:SetWidth(5);
+	frame:SetWidth(250);
 	frame:SetHeight(5);
 	frame:SetClampedToScreen(1);
 	frame:Hide();
 
 	frame.text = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalMed1");
-	frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
+	frame.text:SetPoint("TOPLEFT", 10, -10);
+	frame.text:SetPoint("TOPRIGHT", -10, -10);
+	local origSetText = frame.text.SetText;
+	frame.text.SetText = function(self, text)
+		origSetText(self, text);
+		frame.dontResize = true;
+		frame:SetHeight(self:GetStringHeight() + 20);
+		frame.dontResize = false;
+	end
 
 	frame.icon = frame:CreateTexture(nil, "BORDER");
 	frame.icon:SetSize(40, 40);
 	frame.icon:SetPoint("TOPRIGHT", frame, "TOPLEFT", -5, 0);
 	frame.icon:Hide();
 
-	frame.SetText = function(self, text)
-		self.text:ClearAllPoints();
-		self.text:SetPoint("CENTER", frame, "CENTER", 0, 0);
+	frame:SetScript("OnSizeChanged", function(self)
+		if (not self.dontResize) then
+			self:SetHeight(self.text:GetStringHeight() + 20);
+		end
+	end);
+
+	frame.SetText = function(self, text, icon)
 		self.text:SetText(text);
-		local width = self.text:GetStringWidth();
-		local height = self.text:GetStringHeight();
-		self:SetSize(width + 20, height + 20);
-		self.icon:Hide();
+		if (icon ~= nil) then
+			self.icon:SetTexture(icon);
+			self.icon:Show();
+		else
+			self.icon:Hide();
+		end
 	end
+
 	frame.GetTextObject = function(self)
 		return self.text;
 	end
+
 	frame.SetSpellById = function(self, spellID)
 		local spell = Spell:CreateFromSpellID(spellID);
 		spell:ContinueOnSpellLoad(function()
-			self.spellName = spell:GetSpellName();
-			self.spellDesc = spell:GetSpellDescription();
-			self.spellTexture = GetSpellTexture(spellID);
-			self:SetWidth(250);
-			self.text:ClearAllPoints();
-			self.text:SetPoint("TOPLEFT", 10, -10);
-			self.text:SetPoint("TOPRIGHT", -10, -10);
-			self.text:SetText(self.spellName .. "\n\n" .. self.spellDesc .. "\n" .. ColorizeText("Spell ID: " .. spellID, 91/255, 165/255, 249/255));
-			local height = self.text:GetStringHeight();
-			self:SetHeight(height + 20);
-			self.icon:SetTexture(self.spellTexture);
-			self.icon:Show();
+			local spellName = spell:GetSpellName();
+			local spellDesc = spell:GetSpellDescription();
+			local spellTexture = GetSpellTexture(spellID);
+			self:SetText(string_format("%s\n\n%s\n%s", spellName, spellDesc, ColorizeText("Spell ID: " .. spellID, 91/255, 165/255, 249/255)), spellTexture);
 		end);
 	end
 	
 	return frame;
 end
 
-function lib.SetTooltip(frame, text)
+function lib.SetTooltip(frame, text, justify)
 	if (frame.LRDTooltip == nil) then
 		frame.LRDTooltip = lib.CreateTooltip();
 		frame.LRDTooltipText = text;
+		frame.LRDTooltipJustify = justify or "CENTER";
 		frame:HookScript("OnEnter", function(self, ...)
 			frame.LRDTooltip:ClearAllPoints();
 			frame.LRDTooltip:SetPoint("BOTTOM", frame, "TOP", 0, 0);
+			frame.LRDTooltip:GetTextObject():SetJustifyH(frame.LRDTooltipJustify);
 			frame.LRDTooltip:SetText(frame.LRDTooltipText);
 			frame.LRDTooltip:Show();
 		end);
@@ -717,16 +726,296 @@ local function GetLuaEditorTheme()
 end
 
 function lib.CreateLuaEditor()
-	local window = AceGUI:Create("Frame");
-	window:Hide();
-	window:SetTitle("Lua editor");
-	--window:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end);
-	window:SetLayout("Fill");
-	window.Editor = AceGUI:Create("MultiLineEditBox");
-	IndentationLib.enable(window.Editor.editBox, GetLuaEditorTheme(), 4);
-	window:AddChild(window.Editor);
+	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
+	frame:SetSize(700, 500);
+	frame:SetPoint("CENTER");
+	frame:Hide();
 
-	return window;
+	frame:EnableMouse(true);
+	frame:SetMovable(true);
+	frame:SetResizable(true);
+	frame:SetFrameStrata("FULLSCREEN_DIALOG");
+	frame:SetBackdrop({
+		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = 1,
+		tileSize = 16,
+		edgeSize = 16,
+		insets = { left = 4, right = 4, top = 4, bottom = 4 }
+	});
+	frame:SetBackdropColor(0, 0, 0, 1);
+	frame:SetMinResize(400, 200);
+	frame:SetToplevel(true);
+
+	-- header
+	do
+		frame.Header = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate");
+		frame.Header:SetSize(200, 30);
+		frame.Header:EnableMouse(true);
+		frame.Header:SetBackdrop({
+			bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+			tile = 1,
+			tileSize = 16,
+			edgeSize = 16,
+			insets = { left = 4, right = 4, top = 4, bottom = 4 }
+		});
+		frame.Header:SetBackdropColor(0, 0, 0, 1);
+		frame.Header:SetPoint("BOTTOM", frame, "TOP", 0, -3);
+		frame.Header:SetScript("OnMouseDown", function() frame:StartMoving(); end);
+		frame.Header:SetScript("OnMouseUp", function() frame:StopMovingOrSizing(); end)
+
+		frame.Header.text = frame.Header:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge");
+		frame.Header.text:SetPoint("CENTER");
+		frame.Header.text:SetText("LuaEditor");
+	end
+
+	-- buttons
+	do
+		frame.CloseButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate");
+		frame.CloseButton:SetScript("OnClick", function() frame:Hide(); end);
+		frame.CloseButton:SetPoint("BOTTOMRIGHT", -27, 17);
+		frame.CloseButton:SetHeight(20);
+		frame.CloseButton:SetWidth(100);
+		frame.CloseButton:SetText(CLOSE);
+
+		frame.ApplyButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate");
+		frame.ApplyButton:SetScript("OnClick", function(self)
+			if (frame.OnAcceptFunc ~= nil) then frame:OnAcceptFunc(); end
+			self:Disable();
+		end);
+		frame.ApplyButton:SetPoint("RIGHT", frame.CloseButton, "LEFT", -5, 0);
+		frame.ApplyButton:SetHeight(20);
+		frame.ApplyButton:SetWidth(100);
+		frame.ApplyButton:SetText(ACCEPT);
+		frame.ApplyButton:Disable();
+
+		frame.InfoButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate");
+		frame.InfoButton:SetScript("OnClick", function(self)
+			if (frame.OnInfoButtonClick ~= nil) then frame:OnInfoButtonClick(); end
+		end);
+		frame.InfoButton:SetPoint("RIGHT", frame.ApplyButton, "LEFT", -5, 0);
+		frame.InfoButton:SetHeight(20);
+		frame.InfoButton:SetWidth(100);
+		frame.InfoButton:SetText(INFO);
+		frame.InfoButton:Hide();
+	end
+
+	-- status text
+	do
+		frame.StatusTextFrame = CreateFrame("Button", nil, frame);
+		frame.StatusTextFrame:SetPoint("BOTTOMLEFT", 15, 15);
+		frame.StatusTextFrame:SetPoint("RIGHT", frame.ApplyButton, "LEFT", -5, 0);
+		frame.StatusTextFrame:SetHeight(24);
+
+		local tooltip = lib.CreateTooltip();
+		frame.StatusTextFrame:SetScript("OnEnter", function(self)
+			local text = frame:GetStatusText();
+			if (text ~= nil and text ~= "") then
+				tooltip:ClearAllPoints();
+				tooltip:SetPoint("TOP", self, "BOTTOM", 0, 0);
+				tooltip:SetText(text);
+				tooltip:Show();
+			end
+		end);
+		frame.StatusTextFrame:SetScript("OnLeave", function(self)
+			tooltip:Hide();
+		end);
+
+		frame.StatusText = frame.StatusTextFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+		frame.StatusText:SetPoint("TOPLEFT", 7, -2);
+		frame.StatusText:SetPoint("BOTTOMRIGHT", -7, 2);
+		frame.StatusText:SetHeight(20);
+		frame.StatusText:SetJustifyH("LEFT");
+		frame.StatusText:SetText("");
+	end
+
+	-- resize controls
+	do
+		local sizer_se = CreateFrame("Frame", nil, frame)
+		sizer_se:SetPoint("BOTTOMRIGHT")
+		sizer_se:SetWidth(25)
+		sizer_se:SetHeight(25)
+		sizer_se:EnableMouse()
+		sizer_se:SetScript("OnMouseDown", function() frame:StartSizing("BOTTOMRIGHT"); end);
+		sizer_se:SetScript("OnMouseUp", function() frame:StopMovingOrSizing(); end)
+
+		local line1 = sizer_se:CreateTexture(nil, "BACKGROUND")
+		line1:SetWidth(14)
+		line1:SetHeight(14)
+		line1:SetPoint("BOTTOMRIGHT", -8, 8)
+		line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+		local x = 0.1 * 14/17
+		line1:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
+
+		local line2 = sizer_se:CreateTexture(nil, "BACKGROUND")
+		line2:SetWidth(8)
+		line2:SetHeight(8)
+		line2:SetPoint("BOTTOMRIGHT", -8, 8)
+		line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+		local x = 0.1 * 8/17
+		line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
+
+		local sizer_s = CreateFrame("Frame", nil, frame)
+		sizer_s:SetPoint("BOTTOMRIGHT", -25, 0)
+		sizer_s:SetPoint("BOTTOMLEFT")
+		sizer_s:SetHeight(25)
+		sizer_s:EnableMouse(true)
+		sizer_s:SetScript("OnMouseDown", function() frame:StartSizing("BOTTOM"); end)
+		sizer_s:SetScript("OnMouseUp", function() frame:StopMovingOrSizing(); end)
+
+		local sizer_e = CreateFrame("Frame", nil, frame)
+		sizer_e:SetPoint("BOTTOMRIGHT", 0, 25)
+		sizer_e:SetPoint("TOPRIGHT")
+		sizer_e:SetWidth(25)
+		sizer_e:EnableMouse(true)
+		sizer_e:SetScript("OnMouseDown", function() frame:StartSizing("RIGHT"); end)
+		sizer_e:SetScript("OnMouseUp", function() frame:StopMovingOrSizing(); end)
+	end
+
+	-- scroll controls & editbox
+	do
+		local scrollBG = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+		scrollBG:SetBackdrop({
+			bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
+			edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]], edgeSize = 16,
+			insets = { left = 4, right = 3, top = 4, bottom = 3 }
+		});
+		scrollBG:SetBackdropColor(0, 0, 0);
+		scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4);
+
+		local scrollFrame = CreateFrame("ScrollFrame", ("%dScrollFrame"):format(math.random(0, 10000)), frame, "UIPanelScrollFrameTemplate");
+		frame.EditBox = CreateFrame("EditBox", ("%dEdit"):format(math.random(0, 10000)), scrollFrame)
+
+		local scrollBar = _G[scrollFrame:GetName() .. "ScrollBar"]
+		scrollBar:ClearAllPoints()
+		scrollBar:SetPoint("TOP", frame, "TOP", 0, -29)
+		scrollBar:SetPoint("BOTTOM", frame.StatusTextFrame, "TOP", 0, 18)
+		scrollBar:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
+
+		scrollBG:SetPoint("TOPRIGHT", scrollBar, "TOPLEFT", 0, 19)
+		scrollBG:SetPoint("BOTTOMLEFT", frame.StatusTextFrame, "TOPLEFT")
+
+		scrollFrame:SetPoint("TOPLEFT", scrollBG, "TOPLEFT", 5, -6)
+		scrollFrame:SetPoint("BOTTOMRIGHT", scrollBG, "BOTTOMRIGHT", -4, 4)
+
+		local function OnMouseUp(self)
+			frame.EditBox:SetFocus();
+			frame.EditBox:SetCursorPosition(frame.EditBox:GetNumLetters());
+		end
+
+		local function OnSizeChanged(self, width, height)
+			frame.EditBox:SetWidth(width);
+		end
+
+		local function OnVerticalScroll(self, offset)
+			frame.EditBox:SetHitRectInsets(0, 0, offset, frame.EditBox:GetHeight() - offset - self:GetHeight())
+		end
+
+		local function OnCursorChanged(self, _, y, _, cursorHeight)
+			self, y = scrollFrame, -y
+			local offset = self:GetVerticalScroll()
+			if y < offset then
+				self:SetVerticalScroll(y)
+			else
+				y = y + cursorHeight - self:GetHeight()
+				if y > offset then
+					self:SetVerticalScroll(y)
+				end
+			end
+		end
+
+		local function OnEditFocusLost(self)
+			self:HighlightText(0, 0)
+		end
+
+		local function OnTextChanged(self, userInput)
+			if (userInput) then
+				frame.ApplyButton:Enable();
+				if (frame.OnTextChangedFunc ~= nil) then frame:OnTextChangedFunc(); end
+			end
+		end
+
+		local function OnTextSet(self)
+			self:HighlightText(0, 0)
+			self:SetCursorPosition(self:GetNumLetters())
+			self:SetCursorPosition(0)
+			frame.ApplyButton:Disable()
+		end
+
+		scrollFrame:SetScript("OnMouseUp", OnMouseUp);
+		scrollFrame:SetScript("OnSizeChanged", OnSizeChanged);
+		scrollFrame:HookScript("OnVerticalScroll", OnVerticalScroll);
+
+		frame.EditBox:SetAllPoints();
+		frame.EditBox:SetFontObject(ChatFontNormal);
+		frame.EditBox:SetMultiLine(true);
+		frame.EditBox:EnableMouse(true);
+		frame.EditBox:SetAutoFocus(false);
+		frame.EditBox:SetCountInvisibleLetters(false);
+		frame.EditBox:SetScript("OnCursorChanged", OnCursorChanged);
+		frame.EditBox:SetScript("OnEditFocusLost", OnEditFocusLost);
+		frame.EditBox:SetScript("OnEscapePressed", frame.EditBox.ClearFocus);
+		frame.EditBox:SetScript("OnTextChanged", OnTextChanged)
+		frame.EditBox:SetScript("OnTextSet", OnTextSet)
+		frame.EditBox:SetScript("OnEditFocusGained", OnEditFocusGained)
+
+		scrollFrame:SetScrollChild(frame.EditBox);
+	end
+
+	IndentationLib.enable(frame.EditBox, GetLuaEditorTheme(), 4);
+
+	frame.SetOnAcceptHandler = function(self, func)
+		self.OnAcceptFunc = func;
+	end
+
+	frame.SetOnTextChangedHandler = function(self, func)
+		self.OnTextChangedFunc = func;
+	end
+
+	frame.SetStatusText = function(self, text)
+		self.StatusText:SetText(text);
+	end
+
+	frame.GetStatusText = function(self)
+		return self.StatusText:GetText();
+	end
+
+	frame.SetText = function(self, text)
+		self.EditBox:SetText(text);
+	end
+
+	frame.GetText = function(self)
+		return self.EditBox:GetText();
+	end
+
+	frame.SetHeaderText = function(self, text)
+		self.Header.text:SetText(text);
+	end
+
+	frame.SetHeaderText = function(self)
+		return self.Header.text:GetText();
+	end
+
+	frame.SetInfoButton = function(self, enabled, func)
+		if (enabled) then
+			if (func ~= nil) then
+				self.OnInfoButtonClick = func;
+				self.InfoButton:Show();
+				self.StatusTextFrame:ClearAllPoints();
+				self.StatusTextFrame:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 15, 15);
+				self.StatusTextFrame:SetPoint("RIGHT", self.InfoButton, "LEFT", -5, 0);
+			else
+				error("LibRedDropdown.LuaEditor.SetInfoButton: func must not be nil!");
+			end
+		else
+			self.InfoButton:Hide();
+			self.StatusTextFrame:ClearAllPoints();
+			self.StatusTextFrame:SetPoint("RIGHT", frame.ApplyButton, "LEFT", -5, 0);
+		end
+	end
+
+	return frame;
 end
 
 function lib.CreateDropdown()

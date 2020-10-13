@@ -141,9 +141,9 @@ local tooltip = libRedDropdown.CreateTooltip();
 ### Methods
 | Method | Description |
 |--------|-------------|
-| tooltip:SetText(_string_ text)                | Sets text of label.                          |
-| tooltip:GetTextObject()                       | Returns text object of label (_FontString_). |
-| tooltip:SetSpellById(_number_ spellid)        | Sets spell as info for tooltip.              |
+| tooltip:SetText(_string_ text, _number_ textureID)       | Sets text (and optionally icon) of tooltip.  |
+| tooltip:GetTextObject()                                  | Returns text object of label (_FontString_). |
+| tooltip:SetSpellById(_number_ spellid)                   | Sets spell as info for tooltip.              |
   
 <br /><br /><a name="example1" /><br />
 # Examples  
@@ -307,7 +307,7 @@ button:SetPoint("CENTER", 0, 0);
 button:SetScript("OnClick", function(self, ...)
   print(string.format("Button with label '%s' is clicked!", self:GetText()));
 end);
-libRedDropdown.SetTooltip(button, "I'm tooltip!");
+libRedDropdown.SetTooltip(button, "I'm tooltip!", "LEFT"); -- the last argument is justification of text
 
 -- manual
 local button = libRedDropdown.CreateButton();
