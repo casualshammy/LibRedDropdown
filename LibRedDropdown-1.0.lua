@@ -993,7 +993,7 @@ function lib.CreateLuaEditor()
 		self.Header.text:SetText(text);
 	end
 
-	frame.SetHeaderText = function(self)
+	frame.GetHeaderText = function(self)
 		return self.Header.text:GetText();
 	end
 
@@ -1012,6 +1012,15 @@ function lib.CreateLuaEditor()
 			self.InfoButton:Hide();
 			self.StatusTextFrame:ClearAllPoints();
 			self.StatusTextFrame:SetPoint("RIGHT", frame.ApplyButton, "LEFT", -5, 0);
+		end
+	end
+
+	frame.SetAcceptButton = function(self, enabled, func)
+		self.OnAcceptFunc = func;
+		if (enabled) then
+			self.ApplyButton:Show();
+		else
+			self.ApplyButton:Hide();
 		end
 	end
 
