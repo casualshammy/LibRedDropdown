@@ -1,3 +1,6 @@
+-- luacheck: no max line length
+-- luacheck: globals LibStub IndentationLib CreateFrame UIParent BackdropTemplateMixin Spell hooksecurefunc GameFontHighlightSmall unpack
+
 local LIB_NAME = "LibRedDropdown-1.0";
 local lib = LibStub:NewLibrary(LIB_NAME, 12);
 if (not lib) then return; end -- No upgrade needed
@@ -69,21 +72,21 @@ function lib.CreateDropdownMenu()
 	searchBoxText:SetText("Click to search...");
 	selectorEx.searchBox:SetScript("OnEditFocusGained", function() searchBoxText:Hide(); end);
 	selectorEx.searchBox:SetScript("OnEditFocusLost", function() searchBoxText:Show(); end);
-		
+
 	selectorEx.scrollArea = CreateFrame("ScrollFrame", nil, selectorEx, "UIPanelScrollFrameTemplate");
 	selectorEx.scrollArea:SetPoint("TOPLEFT", selectorEx, "TOPLEFT", 5, SCROLL_AREA_Y_OFFSET);
 	selectorEx.scrollArea:SetPoint("BOTTOMRIGHT", selectorEx, "BOTTOMRIGHT", -30, 5);
 	selectorEx.scrollArea:Show();
-	
+
 	selectorEx.scrollAreaChildFrame = CreateFrame("Frame", nil, selectorEx.scrollArea);
 	selectorEx.scrollArea:SetScrollChild(selectorEx.scrollAreaChildFrame);
 	selectorEx.scrollAreaChildFrame:SetWidth(selectorEx.scrollArea:GetWidth() - 10);
 	selectorEx.scrollAreaChildFrame:SetHeight(288);
-	
+
 	selectorEx.buttons = { };
 	selectorEx.list = { };
 	selectorEx.currentPosition = -1;
-	
+
 	local function GetButton(s, counter)
 		if (s.buttons[counter] == nil) then
 			local line = CreateFrame("frame", nil, s.scrollAreaChildFrame);
@@ -123,8 +126,8 @@ function lib.CreateDropdownMenu()
 			return s.buttons[counter];
 		end
 	end
-	
-	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled, 
+
+	-- value.text, value.font, value.icon, value.func, value.onEnter, value.onLeave, value.disabled, value.dontCloseOnClick, value.checkBoxEnabled,
 	--value.onCheckBoxClick, value.checkBoxState, onCloseButtonClick, buttonColor
 	selectorEx.SetList = function(s, t, dontUpdateInternalList)
 		for _, button in pairs(s.buttons) do
@@ -191,7 +194,7 @@ function lib.CreateDropdownMenu()
 			s.list = t;
 		end
 	end
-	
+
 	selectorEx.GetButtonByText = function(s, text)
 		for _, button in pairs(s.buttons) do
 			if (button.Text:GetText() == text) then
@@ -200,14 +203,14 @@ function lib.CreateDropdownMenu()
 		end
 		return nil;
 	end
-	
+
 	selectorEx:SetList({});
 	selectorEx:Hide();
 	selectorEx:HookScript("OnShow", function(self)
 		self:SetFrameStrata("TOOLTIP");
 
 		if (self.autoAdjustHeight and #self.buttons > 0) then
-			local point, parent, pointParent, xOffset, yOffset = self.buttons[#self.buttons]:GetPoint();
+			local _, _, _, _, yOffset = self.buttons[#self.buttons]:GetPoint();
 			self:SetHeight(-SCROLL_AREA_Y_OFFSET + -yOffset + self.buttons[#self.buttons]:GetHeight() + 10);
 		end
 
@@ -219,7 +222,7 @@ function lib.CreateDropdownMenu()
 		self.searchBox:SetText("");
 		self.currentPosition = self.scrollArea:GetVerticalScroll();
 	end);
-	
+
 	return selectorEx;
 end
 
@@ -287,7 +290,7 @@ function lib.CreateTooltip()
 			self:SetText(string_format("%s\n\n%s\n%s", spellName, spellDesc, ColorizeText("Spell ID: " .. spellID, 91/255, 165/255, 249/255)), spellTexture);
 		end);
 	end
-	
+
 	return frame;
 end
 
@@ -323,11 +326,11 @@ function lib.CreateCheckBox()
 	checkBox.textFrame = CreateFrame("frame", nil, checkBox);
 	checkBox.textFrame:SetPoint("LEFT", checkBox, "RIGHT", 0, 0);
 	checkBox.textFrame:EnableMouse(true);
-	checkBox.textFrame:HookScript("OnEnter", function(self, ...) checkBox:LockHighlight(); end);
-	checkBox.textFrame:HookScript("OnLeave", function(self, ...) checkBox:UnlockHighlight(); end);
+	checkBox.textFrame:HookScript("OnEnter", function() checkBox:LockHighlight(); end);
+	checkBox.textFrame:HookScript("OnLeave", function() checkBox:UnlockHighlight(); end);
 	checkBox.textFrame:Show();
-	checkBox.textFrame:HookScript("OnMouseDown", function(self) checkBox:SetButtonState("PUSHED"); end);
-	checkBox.textFrame:HookScript("OnMouseUp", function(self) checkBox:SetButtonState("NORMAL"); checkBox:Click(); end);
+	checkBox.textFrame:HookScript("OnMouseDown", function() checkBox:SetButtonState("PUSHED"); end);
+	checkBox.textFrame:HookScript("OnMouseUp", function() checkBox:SetButtonState("NORMAL"); checkBox:Click(); end);
 	checkBox.Text = checkBox.textFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 	checkBox.Text:SetPoint("LEFT", 0, 0);
 	checkBox.SetText = function(self, _text)
@@ -345,8 +348,8 @@ function lib.CreateCheckBox()
 		self:SetScript("OnClick", func);
 	end
 	local handlersToBeCopied = { "OnEnter", "OnLeave" };
-	hooksecurefunc(checkBox, "HookScript", function(self, script, proc) if (table_contains_value(handlersToBeCopied, script)) then checkBox.textFrame:HookScript(script, proc); end end);
-	hooksecurefunc(checkBox, "SetScript",  function(self, script, proc) if (table_contains_value(handlersToBeCopied, script)) then checkBox.textFrame:SetScript(script, proc); end end);
+	hooksecurefunc(checkBox, "HookScript", function(_, script, proc) if (table_contains_value(handlersToBeCopied, script)) then checkBox.textFrame:HookScript(script, proc); end end);
+	hooksecurefunc(checkBox, "SetScript",  function(_, script, proc) if (table_contains_value(handlersToBeCopied, script)) then checkBox.textFrame:SetScript(script, proc); end end);
 	checkBox:EnableMouse(true);
 	checkBox:Hide();
 	return checkBox;
