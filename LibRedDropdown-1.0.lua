@@ -1,5 +1,7 @@
 -- luacheck: no max line length
--- luacheck: globals LibStub IndentationLib CreateFrame UIParent BackdropTemplateMixin Spell hooksecurefunc GameFontHighlightSmall unpack
+-- luacheck: globals LibStub IndentationLib CreateFrame UIParent BackdropTemplateMixin Spell hooksecurefunc GameFontHighlightSmall unpack GetBuildInfo
+
+local wowBuild = select(4, GetBuildInfo());
 
 local LIB_NAME = "LibRedDropdown-1.0";
 local lib = LibStub:NewLibrary(LIB_NAME, 12);
@@ -747,7 +749,11 @@ function lib.CreateLuaEditor()
 		insets = { left = 4, right = 4, top = 4, bottom = 4 }
 	});
 	frame:SetBackdropColor(0, 0, 0, 1);
-	frame:SetMinResize(400, 200);
+	if (wowBuild < 100000) then
+		frame:SetMinResize(400, 200);
+	else
+		frame:SetResizeBounds(400, 200);
+	end
 	frame:SetToplevel(true);
 
 	-- header
