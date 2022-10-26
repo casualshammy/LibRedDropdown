@@ -302,15 +302,15 @@ function lib.SetTooltip(frame, text, justify)
 		frame.LRDTooltip = lib.CreateTooltip();
 		frame.LRDTooltipText = text;
 		frame.LRDTooltipJustify = justify or "CENTER";
-		frame:HookScript("OnEnter", function(self)
-			self.LRDTooltip:ClearAllPoints();
-			self.LRDTooltip:SetPoint("BOTTOM", self, "TOP", 0, 0);
-			self.LRDTooltip:GetTextObject():SetJustifyH(self.LRDTooltipJustify);
-			self.LRDTooltip:SetText(self.LRDTooltipText);
-			self.LRDTooltip:Show();
+		frame:HookScript("OnEnter", function()
+			frame.LRDTooltip:ClearAllPoints();
+			frame.LRDTooltip:SetPoint("BOTTOM", frame, "TOP", 0, 0);
+			frame.LRDTooltip:GetTextObject():SetJustifyH(frame.LRDTooltipJustify);
+			frame.LRDTooltip:SetText(frame.LRDTooltipText);
+			frame.LRDTooltip:Show();
 		end);
-		frame:HookScript("OnLeave", function(self)
-			self.LRDTooltip:Hide();
+		frame:HookScript("OnLeave", function()
+			frame.LRDTooltip:Hide();
 		end);
 	else
 		frame.LRDTooltipText = text;
