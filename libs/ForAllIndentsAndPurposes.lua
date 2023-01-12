@@ -886,9 +886,9 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
     end
 
     local function setCaretPos(editbox, pos)
-        local script, script2 = critical_enter(editbox)
+        local script = critical_enter(editbox)
         setCaretPos_main(editbox, pos)
-        critical_leave(editbox, script, script2)
+        critical_leave(editbox, script)
     end
     -- end of caret code
 
@@ -1032,7 +1032,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
 
         editboxStringCache[editbox] = newCode
         if orgCode ~= newCode then
-            local script, script2 = critical_enter(editbox)
+            local script = critical_enter(editbox)
             decodeCache[editbox] = nil
             local stringlenNewCode = stringlen(newCode)
 
@@ -1043,7 +1043,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
 
                 setCaretPos(editbox, newPos)
             end
-            critical_leave(editbox, script, script2)
+            critical_leave(editbox, script)
         end
 
         if editboxNumLinesCache[editbox] ~= numLines then
@@ -1074,7 +1074,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         newCode = lib.padWithLinebreaks(newCode)
         editboxIndentCache[editbox] = newCode
         if code ~= newCode then
-            local script, script2 = critical_enter(editbox)
+            local script = critical_enter(editbox)
             decodeCache[editbox] = nil
 
             local stringlenNewCode = stringlen(newCode)
@@ -1087,7 +1087,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
 
                 setCaretPos(editbox, newPos)
             end
-            critical_leave(editbox, script, script2)
+            critical_leave(editbox, script)
         end
     end
 

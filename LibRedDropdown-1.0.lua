@@ -5,7 +5,7 @@
 local wowBuild = select(4, GetBuildInfo());
 
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 12);
+local lib = LibStub:NewLibrary(LIB_NAME, 13);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
@@ -45,6 +45,7 @@ function lib.CreateDropdownMenu()
 	selectorEx:SetBackdropColor(0.1, 0.1, 0.2, 1);
 	selectorEx:SetBackdropBorderColor(0.8, 0.8, 0.9, 0.4);
 
+	selectorEx.customSearchHandler = nil;
 	selectorEx.searchBox = CreateFrame("EditBox", nil, selectorEx, "InputBoxTemplate");
 	selectorEx.searchBox:SetAutoFocus(false);
 	selectorEx.searchBox:SetFontObject(GameFontHighlightSmall);
@@ -61,11 +62,16 @@ function lib.CreateDropdownMenu()
 			selectorEx:SetList(selectorEx.list);
 		else
 			local t = { };
-			for _, value in pairs(selectorEx.list) do
-				if (string_find(value.text:lower(), text:lower())) then
-					table_insert(t, value);
+			if (selectorEx.customSearchHandler == nil) then
+				for _, value in pairs(selectorEx.list) do
+					if (string_find(value.text:lower(), text:lower())) then
+						table_insert(t, value);
+					end
 				end
+			else
+				t = selectorEx.customSearchHandler(text);
 			end
+
 			selectorEx:SetList(t, true);
 			selectorEx.scrollArea:SetVerticalScroll(0);
 		end
@@ -74,7 +80,20 @@ function lib.CreateDropdownMenu()
 	searchBoxText:SetPoint("LEFT", 0, 0);
 	searchBoxText:SetText("Click to search...");
 	selectorEx.searchBox:SetScript("OnEditFocusGained", function() searchBoxText:Hide(); end);
-	selectorEx.searchBox:SetScript("OnEditFocusLost", function() searchBoxText:Show(); end);
+	selectorEx.searchBox:SetScript("OnEditFocusLost", function()
+		local text = selectorEx.searchBox:GetText();
+		if (text == nil or text == "") then
+			searchBoxText:Show();
+		end
+	end);
+	selectorEx.searchBox.hint = CreateFrame("Frame", nil, selectorEx.searchBox);
+	selectorEx.searchBox.hint:SetWidth(selectorEx.searchBox:GetHeight());
+	selectorEx.searchBox.hint:SetHeight(selectorEx.searchBox:GetHeight());
+	selectorEx.searchBox.hint:SetPoint("RIGHT", selectorEx.searchBox, "RIGHT", -4, 0);
+	selectorEx.searchBox.hint.texture = selectorEx.searchBox.hint:CreateTexture(nil, "OVERLAY");
+	selectorEx.searchBox.hint.texture:SetTexture("Interface\\common\\help-i");
+	selectorEx.searchBox.hint.texture:SetAllPoints(selectorEx.searchBox.hint);
+	selectorEx.searchBox.hint:Hide();
 
 	selectorEx.scrollArea = CreateFrame("ScrollFrame", nil, selectorEx, "UIPanelScrollFrameTemplate");
 	selectorEx.scrollArea:SetPoint("TOPLEFT", selectorEx, "TOPLEFT", 5, SCROLL_AREA_Y_OFFSET);
@@ -205,6 +224,23 @@ function lib.CreateDropdownMenu()
 			end
 		end
 		return nil;
+	end
+
+	selectorEx.SetCustomSearchHandler = function(_self, _handler)
+		_self.customSearchHandler = _handler;
+	end
+
+	selectorEx.SetSearchBoxHint = function(_self, _hint)
+		if (_hint ~= nil and _hint ~= "") then
+			_self.searchBox.hint:Show();
+			lib.SetTooltip(_self.searchBox.hint, _hint, "LEFT");
+		else
+			_self.searchBox.hint:Hide();
+		end
+	end
+
+	selectorEx.GetList = function(_self)
+		return _self.list;
 	end
 
 	selectorEx:SetList({});
