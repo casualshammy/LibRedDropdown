@@ -5,7 +5,7 @@
 local wowBuild = select(4, GetBuildInfo());
 
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 17);
+local lib = LibStub:NewLibrary(LIB_NAME, 18);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
@@ -786,7 +786,7 @@ function lib.CreateLuaEditor()
 		insets = { left = 4, right = 4, top = 4, bottom = 4 }
 	});
 	frame:SetBackdropColor(0, 0, 0, 1);
-	if (wowBuild < 100000) then
+	if (wowBuild < 30401) then
 		frame:SetMinResize(400, 200);
 	else
 		frame:SetResizeBounds(400, 200);
