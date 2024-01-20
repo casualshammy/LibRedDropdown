@@ -5,7 +5,7 @@
 local wowBuild = select(4, GetBuildInfo());
 
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 18);
+local lib = LibStub:NewLibrary(LIB_NAME, 19);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
@@ -473,25 +473,61 @@ function lib.CreateColorPicker()
 
 	colorButton:SetScript("OnClick", function(self)
 		ColorPickerFrame:Hide();
-		local function callback(restore)
-			local r, g, b, a;
-			if (restore) then
-				r, g, b, a = unpack(restore);
-			else
-				a, r, g, b = 1-OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB();
+
+		if (ColorPickerFrame.SetupColorPickerAndShow ~= nil) then -- wow 10.2.5+
+			local colorR, colorG, colorB, colorA = self:GetColor();
+
+			local function changeColorCallback()
+				local a, r, g, b = ColorPickerFrame:GetColorAlpha(), ColorPickerFrame:GetColorRGB();
+
+				self:SetColor(r, g, b, a);
+				if (self.func ~= nil) then
+					self:func(r, g, b, a);
+				end
 			end
-			self:SetColor(r, g, b, a);
-			if (self.func ~= nil) then
-				self:func(r, g, b, a);
+
+			local function cancelCallback()
+				local a, r, g, b = colorA, colorR, colorG, colorB;
+
+				self:SetColor(r, g, b, a);
+				if (self.func ~= nil) then
+					self:func(r, g, b, a);
+				end
 			end
+
+			local info = {
+				swatchFunc = changeColorCallback,
+				opacityFunc = changeColorCallback,
+				cancelFunc = cancelCallback,
+				hasOpacity = true,
+				opacity = colorA,
+				r = colorR,
+				g = colorG,
+				b = colorB
+			};
+
+			ColorPickerFrame:SetupColorPickerAndShow(info);
+		else
+			local function callback(restore)
+				local r, g, b, a;
+				if (restore) then
+					r, g, b, a = unpack(restore);
+				else
+					a, r, g, b = 1-OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB();
+				end
+				self:SetColor(r, g, b, a);
+				if (self.func ~= nil) then
+					self:func(r, g, b, a);
+				end
+			end
+			ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = callback, callback, callback;
+			local colorR, colorG, colorB, colorA = self:GetColor();
+			ColorPickerFrame:SetColorRGB(colorR, colorG, colorB);
+			ColorPickerFrame.hasOpacity = true;
+			ColorPickerFrame.opacity = 1-colorA;
+			ColorPickerFrame.previousValues = { colorR, colorG, colorB, colorA };
+			ColorPickerFrame:Show();
 		end
-		ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = callback, callback, callback;
-		local colorR, colorG, colorB, colorA = self:GetColor();
-		ColorPickerFrame:SetColorRGB(colorR, colorG, colorB);
-		ColorPickerFrame.hasOpacity = true;
-		ColorPickerFrame.opacity = 1-colorA;
-		ColorPickerFrame.previousValues = { colorR, colorG, colorB, colorA };
-		ColorPickerFrame:Show();
 	end);
 
 	return colorButton;
