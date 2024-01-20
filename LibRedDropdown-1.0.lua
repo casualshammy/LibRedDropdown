@@ -5,7 +5,7 @@
 local wowBuild = select(4, GetBuildInfo());
 
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 19);
+local lib = LibStub:NewLibrary(LIB_NAME, 20);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
