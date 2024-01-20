@@ -822,7 +822,9 @@ function lib.CreateLuaEditor()
 		insets = { left = 4, right = 4, top = 4, bottom = 4 }
 	});
 	frame:SetBackdropColor(0, 0, 0, 1);
-	if (wowBuild < 30401) then
+	if (wowBuild < 20000) then
+		frame:SetResizeBounds(400, 200);
+	elseif (wowBuild < 30401) then
 		frame:SetMinResize(400, 200);
 	else
 		frame:SetResizeBounds(400, 200);
