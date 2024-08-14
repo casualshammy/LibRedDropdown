@@ -1,14 +1,15 @@
 -- luacheck: no max line length
--- luacheck: globals LibStub IndentationLib CreateFrame UIParent BackdropTemplateMixin Spell hooksecurefunc GameFontHighlightSmall unpack GetBuildInfo CLOSE GetSpellTexture ColorPickerFrame
--- luacheck: globals OpacitySliderFrame ChatFontNormal ACCEPT INFO
+-- luacheck: globals LibStub IndentationLib CreateFrame UIParent BackdropTemplateMixin Spell hooksecurefunc GameFontHighlightSmall unpack GetBuildInfo CLOSE ColorPickerFrame
+-- luacheck: globals OpacitySliderFrame ChatFontNormal ACCEPT INFO C_Spell
 
 local wowBuild = select(4, GetBuildInfo());
 
 local LIB_NAME = "LibRedDropdown-1.0";
-local lib = LibStub:NewLibrary(LIB_NAME, 20);
+local lib = LibStub:NewLibrary(LIB_NAME, 21);
 if (not lib) then return; end -- No upgrade needed
 
 local table_insert, string_find, string_format, max = table.insert, string.find, string.format, math.max;
+local C_Spell_GetSpellTexture =  C_Spell.GetSpellTexture;
 
 local IndentationLib = IndentationLib;
 
@@ -325,7 +326,7 @@ function lib.CreateTooltip()
 		spell:ContinueOnSpellLoad(function()
 			local spellName = spell:GetSpellName();
 			local spellDesc = spell:GetSpellDescription();
-			local spellTexture = GetSpellTexture(spellID);
+			local spellTexture = C_Spell_GetSpellTexture(spellID);
 			self:SetText(string_format("%s\n\n%s\n%s", spellName, spellDesc, ColorizeText("Spell ID: " .. spellID, 91/255, 165/255, 249/255)), spellTexture);
 		end);
 	end
