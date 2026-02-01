@@ -1084,7 +1084,11 @@ function lib.CreateLuaEditor()
 	if (wowBuild < 20000) then
 		frame:SetResizeBounds(400, 200);
 	elseif (wowBuild < 30401) then
-		frame:SetMinResize(400, 200);
+		if (frame.SetMinResize) then
+			frame:SetMinResize(400, 200);
+		else
+			frame:SetResizeBounds(400, 200);
+		end
 	else
 		frame:SetResizeBounds(400, 200);
 	end
